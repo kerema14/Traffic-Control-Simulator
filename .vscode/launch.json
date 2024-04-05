@@ -6,17 +6,18 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "TrafficControlSimulator.Main",
-            "projectName": "Traffic-Control-Simulator_cd92b69d",
+            "projectName": "Traffic-Control-Simulator"
+            ,
             "vmArgs": "--module-path lib --add-modules javafx.controls,javafx.fxml"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
         }
     ]
 }
