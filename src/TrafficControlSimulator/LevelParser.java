@@ -15,11 +15,11 @@ public class LevelParser {
 	private int carNumToWin;
 	private int maxCarAccident;
 
-	private ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
-	private ArrayList<int[]> roadTileInfo = new ArrayList<>();// type, rotation, gridX, gridY
-	private ArrayList<double[]> trafficLightInfo = new ArrayList<>();// x1, y1, x2, y2
-	private ArrayList<double[]> moveToInfo = new ArrayList<>();// path index, posX, posY
-	private ArrayList<double[]> lineToInfo = new ArrayList<>();// path index, posX, posY
+	public ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
+	public ArrayList<int[]> roadTileInfo = new ArrayList<>();// type, rotation, gridX, gridY
+	public ArrayList<double[]> trafficLightInfo = new ArrayList<>();// x1, y1, x2, y2
+	public ArrayList<double[]> moveToInfo = new ArrayList<>();// path index, posX, posY
+	public ArrayList<double[]> lineToInfo = new ArrayList<>();// path index, posX, posY
 
 	LevelParser() {
 	}
