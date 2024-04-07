@@ -70,8 +70,8 @@ public class Main extends Application {
         startGameButton.setOnMouseClicked(event -> {
             if (levelFile != null) {
                 //switch to level scene by changing the root on the existing scene
-            	Pane levelPane = new Pane();
-            	this.createLevelPane(levelPane);
+            	GridPane levelPane = new GridPane();
+            	this.setLevelPane(levelPane);
                 scene.setRoot(levelPane);
             }
 
@@ -82,14 +82,53 @@ public class Main extends Application {
         primaryStage.show();
     }
     
-    private void createLevelPane(Pane levelPane) {
-    	levelPane.setStyle("-fx-background-color: cornflowerblue;");
-    	
-    	
-    	
-        levelPane.getChildren().addAll();
+    private void setLevelPane(GridPane levelpane) {
+    	double tileWidth = levelParser.getDimensonInfo()[0] / levelParser.getDimensonInfo()[2];
+    	double tileHeight = levelParser.getDimensonInfo()[1] / levelParser.getDimensonInfo()[3];
 		
+    	for(int c = 0; c < levelParser.getDimensonInfo()[2]; c++) {
+    		for(int r= 0; r < levelParser.getDimensonInfo()[3]; r++) {
+    			levelpane.add(getEmptyTile(tileWidth, tileHeight), r, c);
+    		}
+    	}
+    	
+    	for(int[] roadData : levelParser.roadTileInfo) {
+    		levelpane.add(getRoadTile(roadData[0], roadData[1], tileWidth, tileHeight), roadData[2], roadData[3]);
+    	}
 	}
+    
+    private ImageView getEmptyTile(double width, double height) {
+    	
+    	Image image = new Image("/images/EmptyTile.png");
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+        
+        return imageView;
+    }
+    
+    private ImageView getRoadTile(int type, int rotation, double width, double height) {
+    	
+    	Image image = new Image("/images/RoadTile-Type" + type + "-Rotation" + rotation + ".png");
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitWidth(width);
+        imageView.setFitHeight(height);
+        
+        return imageView;
+    	
+    }
+    
+    private ImageView getBuildingTile(int type, int colorindex, int rotation) {
+    	
+    	Image image = new Image("/images/EmptyTile.png");
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        
+        return imageView;
+    	
+    }
 
 	public static void main(String[] args) {
         launch(args);
