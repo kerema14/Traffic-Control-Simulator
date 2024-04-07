@@ -12,8 +12,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -65,8 +69,10 @@ public class Main extends Application {
         });
         startGameButton.setOnMouseClicked(event -> {
             if (levelFile != null) {
-                
-
+                //switch to level scene by changing the root on the existing scene
+            	Pane levelPane = new Pane();
+            	this.createLevelPane(levelPane);
+                scene.setRoot(levelPane);
             }
 
         });
@@ -76,7 +82,16 @@ public class Main extends Application {
         primaryStage.show();
     }
     
-    public static void main(String[] args) {
+    private void createLevelPane(Pane levelPane) {
+    	levelPane.setStyle("-fx-background-color: cornflowerblue;");
+    	
+    	
+    	
+        levelPane.getChildren().addAll();
+		
+	}
+
+	public static void main(String[] args) {
         launch(args);
     }
 
