@@ -11,25 +11,29 @@ public class LevelParser {
 	private double lvlHeight;
 	private int lvlColumnNum;
 	private int lvlRowNum;
+	private double tileSize;
 	private int lvlPathNum;
 	private int carNumToWin;
 	private int maxCarAccident;
 
-	public ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
-	public ArrayList<int[]> roadTileInfo = new ArrayList<>();// type, rotation, gridX, gridY
-	public ArrayList<double[]> trafficLightInfo = new ArrayList<>();// x1, y1, x2, y2
-	public ArrayList<double[]> moveToInfo = new ArrayList<>();// path index, posX, posY
-	public ArrayList<double[]> lineToInfo = new ArrayList<>();// path index, posX, posY
+	private ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
+	private ArrayList<int[]> roadTileInfo = new ArrayList<>();// type, rotation, gridX, gridY
+	private ArrayList<double[]> trafficLightInfo = new ArrayList<>();// x1, y1, x2, y2
+	private ArrayList<double[]> moveToInfo = new ArrayList<>();// path index, posX, posY
+	private ArrayList<double[]> lineToInfo = new ArrayList<>();// path index, posX, posY
+
+	public ArrayList<Building> buildings = new ArrayList<>();
+	public ArrayList<RoadTile> roadTiles = new ArrayList<>();
 
 	LevelParser() {
 	}
-	
-	//method for parsing the level data from txt files and storing them
+
+	// method for parsing the level data from txt files and storing them
 	public void getLevelInfo(File levelFile) {
 
 		Scanner reader = null;
 		try {
-			File lvlFile = new File("src\\levels\\"+levelFile.getName());
+			File lvlFile = new File("src\\levels\\" + levelFile.getName());
 			reader = new Scanner(lvlFile);
 
 		} catch (FileNotFoundException e) {
@@ -45,11 +49,13 @@ public class LevelParser {
 			lines.add(words);
 		}
 
-		// metadata width, height, column, row, number of paths, number of cars to win, maxnumber of cars to lose
+		// metadata width, height, column, row, number of paths, number of cars to win,
+		// maxnumber of cars to lose
 		this.lvlWidth = Double.parseDouble(lines.get(0)[1]);
 		this.lvlHeight = Double.parseDouble(lines.get(0)[2]);
 		this.lvlColumnNum = Integer.parseInt(lines.get(0)[3]);
 		this.lvlRowNum = Integer.parseInt(lines.get(0)[4]);
+		this.tileSize = lvlWidth / lvlColumnNum;
 		this.lvlPathNum = Integer.parseInt(lines.get(0)[5]);
 		this.carNumToWin = Integer.parseInt(lines.get(0)[6]);
 		this.maxCarAccident = Integer.parseInt(lines.get(0)[7]);
@@ -102,19 +108,34 @@ public class LevelParser {
 
 		}
 
+		createTiles();
+
 		reader.close();
 	}
-	
-	//getter methods
-	
+
+	private void createTiles() {
+		// creating road tiles
+		for (int[] roadData : roadTileInfo) {
+			roadTiles.add(new RoadTile(roadData[0], roadData[1], roadData[2], roadData[3], tileSize));
+		}
+
+		// creating building tiles
+		for (int[] buildingData : buildingInfo) {
+			buildings.add(new Building(buildingData[0], buildingData[1], buildingData[2], buildingData[3],
+					buildingData[4], tileSize));
+		}
+
+	}
+
+	// getter methods
 	public double[] getDimensonInfo() {
-		
+
 		double[] dimensionInfo = new double[4];
 		dimensionInfo[0] = this.lvlWidth;
 		dimensionInfo[1] = this.lvlHeight;
 		dimensionInfo[2] = this.lvlColumnNum;
 		dimensionInfo[3] = this.lvlRowNum;
-		
+
 		return dimensionInfo;
 	}
 
@@ -129,6 +150,5 @@ public class LevelParser {
 	public int getMaxCarAccident() {
 		return maxCarAccident;
 	}
-	
-	
+
 }
