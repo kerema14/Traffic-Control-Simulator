@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -25,7 +26,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	public static File levelFile;
 	public static LevelParser levelParser;
-	public static Scene gameScene;
 
 	@Override // Override the start method in the Application class
 
@@ -46,6 +46,7 @@ public class Main extends Application {
 		gridPane.add(vBox, 400, 400);
 		gridPane.setHgap(1);
 		gridPane.setVgap(1);
+		
 		Scene scene = new Scene(gridPane, 800, 800);
 
 		selectFileButton.setOnMouseClicked(event -> {
@@ -70,10 +71,10 @@ public class Main extends Application {
 		startGameButton.setOnMouseClicked(event -> {
 			if (levelFile != null) {
 				// switch to level scene by changing the root on the existing scene
-				Pane levelPane = new GridPane();
+				Pane levelPane = new Pane();
 				// setting up the level with levelparser
 				this.setLevelPane(levelPane);
-
+				
 				scene.setRoot(levelPane);
 			}
 
@@ -86,13 +87,13 @@ public class Main extends Application {
 	}
 
 	private void setLevelPane(Pane levelpane) {
-		double tileWidth = levelParser.getDimensonInfo()[0] / levelParser.getDimensonInfo()[2];
-		double tileHeight = levelParser.getDimensonInfo()[1] / levelParser.getDimensonInfo()[3];
-		ImageView img;
+		double tileWidth = levelParser.getLvlWidth() / levelParser.getLvlColumnNum();
+		double tileHeight = levelParser.getLvlHeight() / levelParser.getLvlRowNum();
 
 		// adding empty tiles
-		for (int c = -1; c < levelParser.getDimensonInfo()[2]; c++) {
-			for (int r = -1; r < levelParser.getDimensonInfo()[3]; r++) {
+		ImageView img;
+		for (int c = 0; c < levelParser.getLvlColumnNum(); c++) {
+			for (int r = 0; r < levelParser.getLvlRowNum(); r++) {
 				img = getEmptyTile(tileWidth, tileHeight);
 				img.setTranslateX(r * tileWidth);// set the absolute x coordinate
 				img.setTranslateY(c * tileHeight);// set the absolute y coordinate
@@ -102,20 +103,33 @@ public class Main extends Application {
 
 		// adding road tiles
 		for (RoadTile roadTile : levelParser.roadTiles) {
-			img = roadTile.getImage();
-			img.setTranslateX(roadTile.getPosX());// set the absolute x coordinate
-			img.setTranslateY(roadTile.getPosY());// set the absolute y coordinate
-			levelpane.getChildren().add(img);
+			roadTile.setTranslateX(roadTile.getPosX());// set the absolute x coordinate
+			roadTile.setTranslateY(roadTile.getPosY());// set the absolute y coordinate
+			levelpane.getChildren().add(roadTile);
 		}
 
-		// adding buildingd
+		// adding buildings
 		for (Building building : levelParser.buildings) {
-			img = building.getImage();
-			img.setTranslateX(building.getPosX());// set the absolute x coordinate
-			img.setTranslateY(building.getPosY());// set the absolute y coordinate
-			levelpane.getChildren().add(img);
+			building.setTranslateX(building.getPosX());// set the absolute x coordinate
+			building.setTranslateY(building.getPosY());// set the absolute y coordinate
+			levelpane.getChildren().add(building);
 		}
 		
+		//adding trafficlights
+		Line line;
+		Circle circle;
+		for(TrafficLight tl : levelParser.trafficLights) {
+			// adding lines
+			line = tl.getLine();
+			line.relocate(tl.getLinePosX(), tl.getLinePosY());
+			levelpane.getChildren().add(line);
+			
+			//adding circles
+			circle = tl.getCircle();
+			circle.relocate(tl.getCirclePosX() - tl.getCircleRadius(), tl.getCirclePosY() - tl.getCircleRadius());
+			levelpane.getChildren().add(circle);
+			
+		}
 	}
 
 	// method for getting empty tile image

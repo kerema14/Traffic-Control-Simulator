@@ -24,6 +24,7 @@ public class LevelParser {
 
 	public ArrayList<Building> buildings = new ArrayList<>();
 	public ArrayList<RoadTile> roadTiles = new ArrayList<>();
+	public ArrayList<TrafficLight> trafficLights = new ArrayList<>();
 
 	LevelParser() {
 	}
@@ -125,19 +126,15 @@ public class LevelParser {
 					buildingData[4], tileSize));
 		}
 
+		// creating traffic light objects
+		for (double[] trafficLightData : trafficLightInfo) {
+			trafficLights.add(new TrafficLight(trafficLightData[0], trafficLightData[1], trafficLightData[2],
+					trafficLightData[3]));
+		}
+
 	}
 
 	// getter methods
-	public double[] getDimensonInfo() {
-
-		double[] dimensionInfo = new double[4];
-		dimensionInfo[0] = this.lvlWidth;
-		dimensionInfo[1] = this.lvlHeight;
-		dimensionInfo[2] = this.lvlColumnNum;
-		dimensionInfo[3] = this.lvlRowNum;
-
-		return dimensionInfo;
-	}
 
 	public int getLvlPathNum() {
 		return lvlPathNum;
@@ -149,6 +146,22 @@ public class LevelParser {
 
 	public int getMaxCarAccident() {
 		return maxCarAccident;
+	}
+
+	public double getLvlWidth() {
+		return lvlWidth;
+	}
+
+	public double getLvlHeight() {
+		return lvlHeight;
+	}
+
+	public int getLvlColumnNum() {
+		return lvlColumnNum;
+	}
+
+	public int getLvlRowNum() {
+		return lvlRowNum;
 	}
 
 }
