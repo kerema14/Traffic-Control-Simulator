@@ -29,11 +29,17 @@ public class RoadTile {
 	// method for getting road tile ImageView
 	private void setImage() {
 
-		Image img = new Image("/images/RoadTile-Type" + type + "-Rotation" + rotation + ".png");
+		Image img = new Image("/images/RoadTile-Type" + type + ".png");
 		ImageView imageView = new ImageView();
 		imageView.setImage(img);
 		imageView.setFitWidth(tileSize);
 		imageView.setFitHeight(tileSize);
+		// setRotate method rotates clockwise but in the level files rotation angles given counter-clockwise for type 1 roads
+		if(type == 1) {
+			imageView.setRotate(-rotation);
+		} else {
+			imageView.setRotate(rotation);
+		}	
 
 		image = imageView;
 

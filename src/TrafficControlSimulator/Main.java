@@ -81,6 +81,7 @@ public class Main extends Application {
 
 		primaryStage.setTitle("Traffic Control Simulator"); // Set the stage title
 		primaryStage.setScene(scene); // Place the scene in the stage
+		primaryStage.setResizable(false);
 		primaryStage.show();
 	}
 
