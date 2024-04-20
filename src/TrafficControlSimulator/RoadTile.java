@@ -5,6 +5,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 
 public class RoadTile extends Pane{
 	private int type;
@@ -28,13 +29,12 @@ public class RoadTile extends Pane{
 		panePosY = this.gridY * tileSize;
 
 		addRoad();
+		addLines();
 	}
-	
+
 	// method for getting road tile ImageView
 	private void addRoad() {
 		Shape road = createRoad();
-		road.setLayoutX(roadX);
-		road.setLayoutY(roadY);
 		this.getChildren().add(road);
 
 	}
@@ -47,10 +47,10 @@ public class RoadTile extends Pane{
 			Rectangle rect0 = new Rectangle(tileSize, tileSize * 0.8);
 			rect0.setFill(Color.rgb(255, 255, 255, 0.8));
 			
-			roadX = 0;
-			roadY = (tileSize - rect0.getLayoutBounds().getMaxY()) / 2.0;
+			rect0.setX(0);
+			rect0.setY(tileSize * 0.1); 
 			
-			rect0.setRotate(rotation);
+			rect0.getTransforms().add(new Rotate(rotation, tileSize/2.0, tileSize/2.0));
 			
 			return rect0;
 			
@@ -75,16 +75,7 @@ public class RoadTile extends Pane{
 			
 			shape.setFill(Color.rgb(255, 255, 255, 0.8));
 			
-			shape.setRotate(-rotation);//in type 1 roads angles are given counter clock-wise
-			
-			if(rotation == 90) {
-				roadX = tileSize * 0.1;
-			}else if(rotation == 180) {
-				roadX = tileSize * 0.1;
-				roadY = tileSize * -0.1;
-			}else if(rotation == 270) {
-				roadY = tileSize * -0.1;
-			}
+			shape.getTransforms().add(new Rotate(-rotation, tileSize/2.0, tileSize/2.0));
 
 			return shape;
 		
@@ -98,10 +89,7 @@ public class RoadTile extends Pane{
 			shape = Shape.union(rect2, rect3);
 			shape.setFill(Color.rgb(255, 255, 255, 0.8));
 			
-			shape.setRotate(rotation);
-			
-			roadX = 0;
-			roadY = (tileSize - shape.getLayoutBounds().getMaxY()) / 2.0;
+			shape.getTransforms().add(new Rotate(rotation, tileSize/2.0, tileSize/2.0));
 			
 			return shape;
 		
@@ -116,26 +104,17 @@ public class RoadTile extends Pane{
 			
 			shape.setFill(Color.rgb(255, 255, 255, 0.8));
 			
-			shape.setRotate(rotation);
-			
-			if(rotation % 180 == 0) {
-				roadX = 0;
-				roadY = tileSize - shape.getLayoutBounds().getHeight() - tileSize * 0.1;
-			}
-			// rotationdan sonra kordinatlar 0.05 kayıyor şimdilik böyle çözüldü
-			else if(rotation == 270){
-				roadX = tileSize * 0.05;
-				roadY = tileSize * -0.05;
-			}else {
-				roadX = tileSize * -0.05;
-				roadY = tileSize * -0.05;
-			}
+			shape.getTransforms().add(new Rotate(rotation, tileSize/2.0, tileSize/2.0));
 			
 			return shape;
 		
 		default:
 			return null;
 		}
+	}
+	
+	private void addLines() {
+		
 	}
 
 	public double getPosX() {
