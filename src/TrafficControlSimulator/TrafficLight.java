@@ -4,9 +4,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-
+enum TrafficLightMode {
+	RED,
+	GREEN;
+};
 public class TrafficLight {
-
+	
+	private TrafficLightMode trafficLightMode;
 	private double linex1;
 	private double liney1;
 	private double linex2;
@@ -42,7 +46,19 @@ public class TrafficLight {
 
 		return line;
 	}
-	
+	public Color getColor(){
+		return (this.getMode()==TrafficLightMode.GREEN)?Color.GREEN:Color.RED;
+	}
+	public TrafficLightMode getMode(){
+		return this.trafficLightMode;
+
+	}
+	public void toggleLight(){
+		this.trafficLightMode = (this.getMode()==TrafficLightMode.GREEN)?TrafficLightMode.RED:TrafficLightMode.GREEN;
+	}
+	public void setMode(TrafficLightMode trafficLightMode){/*0 for red light, */
+		this.trafficLightMode = trafficLightMode;
+	}
 	public Circle getCircle() {
 		Circle circle = new Circle();
 		circle.setCenterX(circlePosX);
@@ -74,4 +90,5 @@ public class TrafficLight {
 	public double getCircleRadius() {
 		return circleRadius;
 	}
+	
 }
