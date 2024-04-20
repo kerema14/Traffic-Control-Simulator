@@ -1,5 +1,7 @@
 package TrafficControlSimulator;
 
+import java.util.logging.Level;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -14,17 +16,37 @@ public class LevelPane extends Pane{
 	}
 	
 	public void setLevel(LevelParser levelParser) {
+		this.setStyle("-fx-background-color: #9cbcdc;");
+		
 		double tileWidth = levelParser.getLvlWidth() / levelParser.getLvlColumnNum();
 		double tileHeight = levelParser.getLvlHeight() / levelParser.getLvlRowNum();
 
 		// adding empty tiles
 		ImageView img;
+		Line line;
 		for (int c = 0; c < levelParser.getLvlColumnNum(); c++) {
 			for (int r = 0; r < levelParser.getLvlRowNum(); r++) {
+				//vertical lines
+				line = new Line();
+				line.setStartX(c * tileWidth);
+				line.setStartY(0);
+				line.setEndX(c * tileWidth);
+				line.setEndY(levelParser.getLvlHeight());
+				line.setStyle("-fx-stroke: #8ca4bf;");
+				this.getChildren().add(line);
+				//horizontal lines
+				line = new Line();
+				line.setStartX(0);
+				line.setStartY(r * tileHeight);
+				line.setEndX(levelParser.getLvlWidth());
+				line.setEndY(r * tileHeight);
+				line.setStyle("-fx-stroke: #8ca4bf;");
+				this.getChildren().add(line);
+				/*
 				img = getEmptyTile(tileWidth, tileHeight);
 				img.setTranslateX(r * tileWidth);// set the absolute x coordinate
 				img.setTranslateY(c * tileHeight);// set the absolute y coordinate
-				this.getChildren().add(img);
+				*/
 			}
 		}
 
@@ -43,7 +65,6 @@ public class LevelPane extends Pane{
 		}
 		
 		//adding trafficlights
-		Line line;
 		Circle circle;
 		for(TrafficLight tl : levelParser.trafficLights) {
 			// adding lines
@@ -57,18 +78,6 @@ public class LevelPane extends Pane{
 			this.getChildren().add(circle);
 			
 		}
-	}
-
-	// method for getting empty tile image
-	private ImageView getEmptyTile(double width, double height) {
-
-		Image image = new Image("/images/EmptyTile.png");
-		ImageView imageView = new ImageView();
-		imageView.setImage(image);
-		imageView.setFitWidth(width);
-		imageView.setFitHeight(height);
-
-		return imageView;
 	}
 
 }
