@@ -42,25 +42,20 @@ public class LevelPane extends Pane{
 				line.setEndY(r * tileHeight);
 				line.setStyle("-fx-stroke: #8ca4bf;");
 				this.getChildren().add(line);
-				/*
-				img = getEmptyTile(tileWidth, tileHeight);
-				img.setTranslateX(r * tileWidth);// set the absolute x coordinate
-				img.setTranslateY(c * tileHeight);// set the absolute y coordinate
-				*/
 			}
 		}
 
 		// adding road tiles
 		for (RoadTile roadTile : levelParser.roadTiles) {
-			roadTile.setTranslateX(roadTile.getPosX());// set the absolute x coordinate
-			roadTile.setTranslateY(roadTile.getPosY());// set the absolute y coordinate
+			roadTile.setTranslateX(roadTile.getPanePosX());// set the absolute x coordinate
+			roadTile.setTranslateY(roadTile.getPanePosY());// set the absolute y coordinate
 			this.getChildren().add(roadTile);
 		}
 
 		// adding buildings
 		for (Building building : levelParser.buildings) {
-			building.setTranslateX(building.getPosX());// set the absolute x coordinate
-			building.setTranslateY(building.getPosY());// set the absolute y coordinate
+			building.setTranslateX(building.getPanePosX());// set the absolute x coordinate
+			building.setTranslateY(building.getPanePosY());// set the absolute y coordinate
 			this.getChildren().add(building);
 		}
 		
