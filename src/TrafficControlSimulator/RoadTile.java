@@ -1,5 +1,6 @@
 package TrafficControlSimulator;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -14,8 +15,6 @@ public class RoadTile extends Pane{
 	private int gridY;
 	private double panePosX;
 	private double panePosY;
-	private double roadX;
-	private double roadY;
 	private double tileSize;
 
 	public RoadTile(int type, int rotation, int gridX, int gridY, double tileSize) {
@@ -37,6 +36,35 @@ public class RoadTile extends Pane{
 		Shape road = createRoad();
 		this.getChildren().add(road);
 
+	}
+	
+	private void addLines() {
+		
+		switch(type) {
+		case(0):
+			Line line = new Line(0, tileSize/2.0, tileSize, tileSize/2.0);
+			line.getTransforms().add(new Rotate(rotation, tileSize/2.0, tileSize/2.0));
+			line.getStrokeDashArray().addAll(tileSize/8.0, tileSize/4.0, tileSize/4.0, tileSize/4.0, tileSize/8.0);
+			this.getChildren().add(line);
+			break;
+		
+		case(1):
+			QuadCurve curve = new QuadCurve(0, tileSize/2.0, tileSize/2.0, tileSize/2.0, tileSize/2.0, tileSize);
+			curve.setFill(Color.rgb(0, 0, 0, 0));
+			curve.setStroke(Color.BLACK);
+			curve.getStrokeDashArray().addAll(tileSize * 0.1, tileSize * 0.2, tileSize * 0.2, tileSize * 0.2, tileSize * 0.1);
+			curve.getTransforms().add(new Rotate(-rotation, tileSize/2.0, tileSize/2.0));
+			this.getChildren().add(curve);
+			break;
+		
+		case(2):
+			break;
+		
+		case(3):
+			break;
+		}
+		
+		
 	}
 
 	private Shape createRoad() {
@@ -111,10 +139,6 @@ public class RoadTile extends Pane{
 		default:
 			return null;
 		}
-	}
-	
-	private void addLines() {
-		
 	}
 
 	public double getPosX() {
