@@ -5,8 +5,13 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
+enum TrafficLightMode {
+	RED, GREEN;
+};
+
 public class TrafficLight {
 
+	private TrafficLightMode trafficLightMode;
 	private double linex1;
 	private double liney1;
 	private double linex2;
@@ -15,18 +20,19 @@ public class TrafficLight {
 	private double linePosY;
 	private double circlePosX;
 	private double circlePosY;
-	private final double circleRadius = 800.0 / (15.0 * 8.0);	// 1/8 of a tile
+	private final double circleRadius = 800.0 / (15.0 * 8.0); // 1/8 of a tile
 
 	TrafficLight(double x1, double y1, double x2, double y2) {
 		linex1 = x1;
 		liney1 = y1;
 		linex2 = x2;
 		liney2 = y2;
-		//setting traffic line's x and y values to min because pane adds nodes to their top-left corner's coordinates
+		// setting traffic line's x and y values to min because pane adds nodes to their
+		// top-left corner's coordinates
 		linePosX = (linex1 < linex2) ? linex1 : linex2;
 		linePosY = (liney1 < liney2) ? liney1 : liney2;
-		
-		// setting circle's position to middle of the traffic line 
+
+		// setting circle's position to middle of the traffic line
 		circlePosX = (linex1 + linex2) / 2;
 		circlePosY = (liney1 + liney2) / 2;
 	}
@@ -42,7 +48,25 @@ public class TrafficLight {
 
 		return line;
 	}
-	
+
+	public Color getColor() {
+		return (this.getMode() == TrafficLightMode.GREEN) ? Color.GREEN : Color.RED;
+	}
+
+	public TrafficLightMode getMode() {
+		return this.trafficLightMode;
+
+	}
+
+	public void toggleLight() {
+		this.trafficLightMode = (this.getMode() == TrafficLightMode.GREEN) ? TrafficLightMode.RED
+				: TrafficLightMode.GREEN;
+	}
+
+	public void setMode(TrafficLightMode trafficLightMode) {/* 0 for red light, */
+		this.trafficLightMode = trafficLightMode;
+	}
+
 	public Circle getCircle() {
 		Circle circle = new Circle();
 		circle.setCenterX(circlePosX);
@@ -51,7 +75,7 @@ public class TrafficLight {
 		circle.setStrokeWidth(1.0f);
 		circle.setStroke(Color.BLACK);
 		circle.setFill(Color.RED);
-		
+
 		return circle;
 	}
 
@@ -74,4 +98,5 @@ public class TrafficLight {
 	public double getCircleRadius() {
 		return circleRadius;
 	}
+
 }

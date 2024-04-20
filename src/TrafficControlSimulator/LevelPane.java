@@ -4,7 +4,9 @@ import java.util.logging.Level;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
@@ -42,6 +44,11 @@ public class LevelPane extends Pane{
 				line.setEndY(r * tileHeight);
 				line.setStyle("-fx-stroke: #8ca4bf;");
 				this.getChildren().add(line);
+				/*
+				img = getEmptyTile(tileWidth, tileHeight);
+				img.setTranslateX(r * tileWidth);// set the absolute x coordinate
+				img.setTranslateY(c * tileHeight);// set the absolute y coordinate
+				*/
 			}
 		}
 
@@ -60,19 +67,29 @@ public class LevelPane extends Pane{
 		}
 		
 		//adding trafficlights
-		Circle circle;
+		
 		for(TrafficLight tl : levelParser.trafficLights) {
 			// adding lines
 			line = tl.getLine();
 			line.relocate(tl.getLinePosX(), tl.getLinePosY());
 			this.getChildren().add(line);
-			
+			final Circle circle;
 			//adding circles
 			circle = tl.getCircle();
 			circle.relocate(tl.getCirclePosX() - tl.getCircleRadius(), tl.getCirclePosY() - tl.getCircleRadius());
+			circle.setOnMouseClicked(event -> {
+				tl.toggleLight();
+				circle.setFill(tl.getColor());
+				
+			});
 			this.getChildren().add(circle);
 			
+			
 		}
+	}
+	public void drawImage(Pane pane){
+
+
 	}
 
 }
