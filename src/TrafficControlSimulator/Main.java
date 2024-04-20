@@ -19,6 +19,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -71,9 +72,9 @@ public class Main extends Application {
 		startGameButton.setOnMouseClicked(event -> {
 			if (levelFile != null) {
 				// switch to level scene by changing the root on the existing scene
-				Pane levelPane = new Pane();
+				LevelPane levelPane = new LevelPane();
 				// setting up the level with levelparser
-				this.setLevelPane(levelPane);
+				levelPane.setLevel(levelParser);
 				
 				scene.setRoot(levelPane);
 			}
@@ -84,64 +85,6 @@ public class Main extends Application {
 		primaryStage.setScene(scene); // Place the scene in the stage
 		primaryStage.setResizable(false);
 		primaryStage.show();
-	}
-
-	private void setLevelPane(Pane levelpane) {
-		double tileWidth = levelParser.getLvlWidth() / levelParser.getLvlColumnNum();
-		double tileHeight = levelParser.getLvlHeight() / levelParser.getLvlRowNum();
-
-		// adding empty tiles
-		ImageView img;
-		for (int c = 0; c < levelParser.getLvlColumnNum(); c++) {
-			for (int r = 0; r < levelParser.getLvlRowNum(); r++) {
-				img = getEmptyTile(tileWidth, tileHeight);
-				img.setTranslateX(r * tileWidth);// set the absolute x coordinate
-				img.setTranslateY(c * tileHeight);// set the absolute y coordinate
-				levelpane.getChildren().add(img);
-			}
-		}
-
-		// adding road tiles
-		for (RoadTile roadTile : levelParser.roadTiles) {
-			roadTile.setTranslateX(roadTile.getPosX());// set the absolute x coordinate
-			roadTile.setTranslateY(roadTile.getPosY());// set the absolute y coordinate
-			levelpane.getChildren().add(roadTile);
-		}
-
-		// adding buildings
-		for (Building building : levelParser.buildings) {
-			building.setTranslateX(building.getPosX());// set the absolute x coordinate
-			building.setTranslateY(building.getPosY());// set the absolute y coordinate
-			levelpane.getChildren().add(building);
-		}
-		
-		//adding trafficlights
-		Line line;
-		Circle circle;
-		for(TrafficLight tl : levelParser.trafficLights) {
-			// adding lines
-			line = tl.getLine();
-			line.relocate(tl.getLinePosX(), tl.getLinePosY());
-			levelpane.getChildren().add(line);
-			
-			//adding circles
-			circle = tl.getCircle();
-			circle.relocate(tl.getCirclePosX() - tl.getCircleRadius(), tl.getCirclePosY() - tl.getCircleRadius());
-			levelpane.getChildren().add(circle);
-			
-		}
-	}
-
-	// method for getting empty tile image
-	private ImageView getEmptyTile(double width, double height) {
-
-		Image image = new Image("/images/EmptyTile.png");
-		ImageView imageView = new ImageView();
-		imageView.setImage(image);
-		imageView.setFitWidth(width);
-		imageView.setFitHeight(height);
-
-		return imageView;
 	}
 
 	public static void main(String[] args) {

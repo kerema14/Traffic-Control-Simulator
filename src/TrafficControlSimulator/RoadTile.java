@@ -2,8 +2,11 @@ package TrafficControlSimulator;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 
-public class RoadTile extends ImageView {
+public class RoadTile extends ImageView{
 	private int type;
 	private int rotation;
 	private int gridX;
@@ -24,7 +27,7 @@ public class RoadTile extends ImageView {
 
 		setImage();
 	}
-
+	
 	// method for getting road tile ImageView
 	private void setImage() {
 
