@@ -44,11 +44,6 @@ public class LevelPane extends Pane{
 				line.setEndY(r * tileHeight);
 				line.setStyle("-fx-stroke: #8ca4bf;");
 				this.getChildren().add(line);
-				/*
-				img = getEmptyTile(tileWidth, tileHeight);
-				img.setTranslateX(r * tileWidth);// set the absolute x coordinate
-				img.setTranslateY(c * tileHeight);// set the absolute y coordinate
-				*/
 			}
 		}
 
