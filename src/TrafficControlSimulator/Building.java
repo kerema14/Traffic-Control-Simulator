@@ -88,12 +88,15 @@ public class Building extends Pane {
 				base.setTranslateX(-base.getBoundsInParent().getMinX());
 				base.setTranslateY(-base.getBoundsInParent().getMinY());
 				
-				System.out.println(circle1.getBoundsInParent());
-				circle1.setTranslateX(-circle1.getBoundsInParent().getMinX() * 4.5);
-				circle1.setTranslateY(-circle1.getBoundsInParent().getMinY() / 1.5);
+				if(rotation == 270) {
+					circle1.setTranslateX(-circle1.getBoundsInParent().getMinX() / 0.23);
+					circle2.setTranslateX(-circle2.getBoundsInParent().getMinX() / 0.1);
+				}else {
+					circle1.setTranslateX(-circle1.getBoundsInParent().getMinX() / 1.2);
+					circle2.setTranslateX(-circle2.getBoundsInParent().getMinX() / 1.5);
+				}
 				
-				System.out.println(circle2.getBoundsInParent());
-				circle2.setTranslateX(-circle2.getBoundsInParent().getMinX() * 10.5);
+				circle1.setTranslateY(-circle1.getBoundsInParent().getMinY() / 1.5);
 				circle2.setTranslateY(-circle1.getBoundsInParent().getMinY() / 0.5);
 			}
 			

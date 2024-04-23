@@ -1,17 +1,17 @@
 package TrafficControlSimulator;
 
-import java.util.logging.Level;
-
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 public class LevelPane extends Pane{
+	
+	public boolean isGameOver = false;
+	public double x = 800 * Math.random();
+	public double y = 800 * Math.random();
 	
 	public LevelPane() {
 		
@@ -78,13 +78,8 @@ public class LevelPane extends Pane{
 				
 			});
 			this.getChildren().add(circle);
-			
-			
 		}
+		
 	}
-	public void drawImage(Pane pane){
-
-
-	}
-
+	
 }
