@@ -1,11 +1,8 @@
 package TrafficControlSimulator;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 
 public class LevelPane extends Pane{
 	
@@ -24,7 +21,6 @@ public class LevelPane extends Pane{
 		double tileHeight = levelParser.getLvlHeight() / levelParser.getLvlRowNum();
 
 		// adding empty tiles
-		ImageView img;
 		Line line;
 		for (int c = 0; c < levelParser.getLvlColumnNum(); c++) {
 			for (int r = 0; r < levelParser.getLvlRowNum(); r++) {
@@ -83,3 +79,19 @@ public class LevelPane extends Pane{
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
