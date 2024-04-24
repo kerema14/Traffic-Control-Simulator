@@ -22,4 +22,12 @@ public class Vehicle extends Pane{
 		return car;
 	}
 	
+	public void checkCars() {
+		
+	}
+	
+	public void checkTrafficLights() {
+		
+	}
+	
 }
