@@ -77,21 +77,4 @@ public class LevelPane extends Pane{
 		}
 		
 	}
-	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

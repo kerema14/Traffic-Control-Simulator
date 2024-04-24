@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javafx.scene.shape.*;
 
 public class LevelParser {
 
@@ -15,6 +16,7 @@ public class LevelParser {
 	private int lvlPathNum;
 	private int carNumToWin;
 	private int maxCarAccident;
+	private double pathNum;
 
 	private ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
 	private ArrayList<int[]> roadTileInfo = new ArrayList<>();// type, rotation, gridX, gridY
@@ -25,6 +27,7 @@ public class LevelParser {
 	public ArrayList<Building> buildings = new ArrayList<>();
 	public ArrayList<RoadTile> roadTiles = new ArrayList<>();
 	public ArrayList<TrafficLight> trafficLights = new ArrayList<>();
+	public ArrayList<Path> paths = new ArrayList<>();
 
 	LevelParser() {
 	}
@@ -110,6 +113,7 @@ public class LevelParser {
 		}
 
 		createTiles();
+		createPaths();
 
 		reader.close();
 	}
@@ -132,6 +136,36 @@ public class LevelParser {
 					trafficLightData[3]));
 		}
 
+	}
+	
+	//method creating Path objects
+	private void createPaths() {
+		
+		//getting the Path number
+		pathNum = 0; 
+		for(double[] e : moveToInfo) {
+			pathNum = (e[1] > pathNum) ? e[1] : pathNum;
+		}
+		
+		for(int i = 0; i < pathNum; i++) {
+			Path path = new Path();
+			
+			for(double[] move : moveToInfo) {
+				if(move[1] == i) {
+					path.getElements().add(new MoveTo(move[2], move[3]));
+				}
+			}
+			
+			for(double[] lineTo : lineToInfo) {
+				if(lineTo[1] == i) {
+					path.getElements().add(new LineTo(lineTo[2], lineTo[3]));
+				}
+			}
+			
+			paths.add(path);
+		}
+		
+		
 	}
 
 	// getter methods
