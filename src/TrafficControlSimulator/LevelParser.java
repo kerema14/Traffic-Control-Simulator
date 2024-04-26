@@ -99,13 +99,24 @@ public class LevelParser {
 
 			case "Path":
 				double[] pathData = new double[3];
-				pathData[0] = Double.parseDouble(line[1]);
+				int pathIndex = Integer.parseInt(line[1]);
 				pathData[1] = Double.parseDouble(line[3]);
 				pathData[2] = Double.parseDouble(line[4]);
 				if (line[2].equals("MoveTo")) {
-					this.moveToInfo.add(pathData);
+					Path path = new Path();
+					path.getElements().add(new MoveTo(pathData[1],pathData[2]));
+					paths.add(pathIndex, path);
+
+					
+					
+					
 				} else if (line[2].equals("LineTo")) {
-					this.lineToInfo.add(pathData);
+					paths.get(pathIndex).getElements().add(new LineTo(pathData[1],pathData[2]));
+					//buradaki kod LineTo komutunun txt dosyasında MoveTo'dan önce yazılmış olmasına karşın 
+					//tedbirli olması amacıyla optimize edilecek ileride
+
+					
+					
 				}
 				break;
 			}
@@ -113,7 +124,7 @@ public class LevelParser {
 		}
 
 		createTiles();
-		createPaths();
+		
 
 		reader.close();
 	}
@@ -138,36 +149,7 @@ public class LevelParser {
 
 	}
 	
-	//method creating Path objects
-	private void createPaths() {
-		
-		//getting the Path number
-		pathNum = 0; 
-		for(double[] e : moveToInfo) {
-			pathNum = (e[1] > pathNum) ? e[1] : pathNum;
-		}
-		
-		for(int i = 0; i < pathNum; i++) {
-			Path path = new Path();
-			
-			for(double[] move : moveToInfo) {
-				if(move[1] == i) {
-					path.getElements().add(new MoveTo(move[2], move[3]));
-				}
-			}
-			
-			for(double[] lineTo : lineToInfo) {
-				if(lineTo[1] == i) {
-					path.getElements().add(new LineTo(lineTo[2], lineTo[3]));
-				}
-			}
-			
-			paths.add(path);
-		}
-		
-		
-	}
-
+	
 	// getter methods
 
 	public int getLvlPathNum() {
