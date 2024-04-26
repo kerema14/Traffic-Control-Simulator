@@ -5,7 +5,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 public class LevelPane extends Pane{
-	
+	private LevelParser levelParser;
 	public boolean isGameOver = false;
 	public double x = 800 * Math.random();
 	public double y = 800 * Math.random();
@@ -16,7 +16,7 @@ public class LevelPane extends Pane{
 	
 	public void setLevel(LevelParser levelParser) {
 		this.setStyle("-fx-background-color: #9cbcdc;");
-		
+		this.levelParser = levelParser;
 		double tileWidth = levelParser.getLvlWidth() / levelParser.getLvlColumnNum();
 		double tileHeight = levelParser.getLvlHeight() / levelParser.getLvlRowNum();
 
@@ -76,5 +76,9 @@ public class LevelPane extends Pane{
 			this.getChildren().add(circle);
 		}
 		
+	}
+
+	public LevelParser getLevelParser() {
+		return levelParser;
 	}
 }
