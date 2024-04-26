@@ -24,31 +24,72 @@ public class Game {
     public ArrayList<Path> paths = new ArrayList<>();
     public static ArrayList<Timeline> animationTimelines;
     static Timeline carTimeline; 
+    public long oldNow;
+    public double millisecondsPassed;
+    public double totalMillisecondsPassed;
+    public double spawnTimeStamp;
+    public ArrayList<Vehicle> cars = new ArrayList<>();
+
     public void initData(LevelPane levelPane){
+        
         animationTimelines = new ArrayList<Timeline>();
         levelParser = levelPane.getLevelParser();
         this.levelPane = levelPane;
         
         paths = levelParser.paths;
+        createTraffic();
 
     }
-    public void spawnCar(Random rand) {
-        Timeline carSpawner = new Timeline(new KeyFrame(Duration.seconds(10), new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Path carPath = paths.get(rand.nextInt(paths.size()));
-                //double paneX = ((MoveTo)(carPath.getElements().get(0))).getX();
-                Vehicle v = new Vehicle(0, 0);
-                levelPane.getChildren().add(v);
-                
-                //v.startAnimation(); //burada animasyon başlatılacak
-            }
-        }));
-        carSpawner.setCycleCount(Timeline.INDEFINITE);
-        carSpawner.play();
-        carTimeline = carSpawner;
-        animationTimelines.add(carSpawner);
+    public void createTraffic() {
+        
+        AnimationTimer timer = new AnimationTimer() { 
+            @Override 
+            public void handle(long now) { 
+                update(now); 
+            } 
+        }; 
+        timer.start(); 
     }
+    public void update(long now){
+        totalMillisecondsPassed = now/1000000.0;
+        millisecondsPassed = (now-oldNow)/1000000.0;
+        
+        if (totalMillisecondsPassed-spawnTimeStamp > 300) {
+            spawnCar();
+            spawnTimeStamp = totalMillisecondsPassed;
+            
+        }
+        carBehaviour();
+        
+        
+        
+        oldNow = now;
+    }
+    public void spawnCar(){
+        Random random = new Random();
+        
+        Path carPath = paths.get(random.nextInt(paths.size()-1));
+        Vehicle v = new Vehicle(carPath);
+        
+        
+        cars.add(v);
+        levelPane.getChildren().add(v);
+        
+        v.startPathTransition();
+    }
+    public void carBehaviour(){
+        for(Vehicle car : cars){
+            if (car.isCollidible() == false) {
+                
+                levelPane.getChildren().remove(car);
+                continue;
+            }
+            car.checkCars(this.cars);
+            car.checkTrafficLights(this.trafficLights);
+        }
+
+    }
+    
     
     
 }

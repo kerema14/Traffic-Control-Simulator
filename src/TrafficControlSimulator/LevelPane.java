@@ -68,6 +68,7 @@ public class LevelPane extends Pane{
 			//adding circles
 			circle = tl.getCircle();
 			circle.relocate(tl.getCirclePosX() - tl.getCircleRadius(), tl.getCirclePosY() - tl.getCircleRadius());
+			circle.setViewOrder(-1);
 			circle.setOnMouseClicked(event -> {
 				tl.toggleLight();
 				circle.setFill(tl.getColor());
@@ -75,6 +76,8 @@ public class LevelPane extends Pane{
 			});
 			this.getChildren().add(circle);
 		}
+		Game game = new Game();
+		game.initData(this);
 		
 	}
 
