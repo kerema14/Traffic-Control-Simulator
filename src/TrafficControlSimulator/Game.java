@@ -68,14 +68,21 @@ public class Game {
     public void spawnCar(){
         Random random = new Random();
         
-        Path carPath = paths.get(random.nextInt(paths.size()-1));
+        Path carPath = paths.get(random.nextInt(paths.size()));
+        
+        
         Vehicle v = new Vehicle(carPath);
         
         
         cars.add(v);
-        levelPane.getChildren().add(v);
+
         
+        v.setTranslateX(v.paneX);
+        v.setTranslateY(v.paneY);
+        levelPane.getChildren().add(v);
         v.startPathTransition();
+        
+        
     }
     public void carBehaviour(){
         for(Vehicle car : cars){

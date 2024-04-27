@@ -1,16 +1,14 @@
 package TrafficControlSimulator;
 
 import java.util.ArrayList;
-
-
+import java.util.Random;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.animation.PathTransition.OrientationType;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.scene.shape.*;
 
@@ -21,37 +19,62 @@ public class Vehicle extends Pane{
 	public Path carPath;
 	public PathTransition carPathTransition = new PathTransition();;
 	public boolean collidible = true;
+	public boolean wrecked = false;
 	public boolean moving = true;
 	public double pathLength;
 	Rectangle carRectangle;
 	
 	public Vehicle(Path path) {
 		this.paneX = ((MoveTo)(path.getElements().get(0))).getX();;
-		this.paneX = ((MoveTo)(path.getElements().get(0))).getY();;
+		this.paneY = ((MoveTo)(path.getElements().get(0))).getY();;
 		carPath = path;
-		this.getChildren().add(getCar());
+		
+		this.getChildren().add(createCar());
+		
 	}
+	private Rectangle getCarRectangle(){
+		return this.carRectangle;
+	}
+	
 
-	private Rectangle getCar() {
+	private Rectangle createCar() {
+		Random rand = new Random();
 		carRectangle = new Rectangle(800.0 / 40.0, 800.0 / 80.0);
-		carRectangle.setStyle("-fx-fill: blue");
+		
+	    this.setMaxHeight(200.0 / 80.0);
+		this.setMaxWidth(200.0 / 40.0);
+		this.setWidth(200.0 / 40.0);
+		this.setHeight(200.0 / 80.0);
+		
+		int red = rand.nextInt(225);
+		int green = rand.nextInt(225);
+		int blue = rand.nextInt(225);
+		
+        carRectangle.setFill(Color.rgb(red, green, blue, .99));
+		carRectangle.setArcHeight(5);
+		carRectangle.setArcWidth(5);
+		
 		return carRectangle;
 	}
 	
 	public void checkCars(ArrayList<Vehicle> cars) {
 		//check if car is ahead
 		for(Vehicle vehicle:cars){
-			if (checkCollision(this, vehicle) ) {
+			if (checkCollision(this, vehicle) && (this.moving == true)) {
 				this.handleDeath();
+				//collision count needs to be handled! currently is not very correct
+				
 				
 			}
 		}
 	}
 	private boolean checkCollision(Vehicle v1,Vehicle v2){
 		boolean collision = false;
+		
 		if (v1.getBoundsInParent().intersects(v2.getBoundsInParent()) && (v1.isCollidible() && v2.isCollidible())&& (v1!=v2)) {
 			collision = true;
 			carRectangle.setStrokeType(StrokeType.INSIDE);
+			carRectangle.setStrokeWidth(3.35);
 			carRectangle.setStroke(Color.RED);
 		}
 		return collision;
@@ -61,6 +84,7 @@ public class Vehicle extends Pane{
 	
 	public void checkTrafficLights(ArrayList<TrafficLight> lights) {
 		//check if lights are ahead
+		
 		
 	}
 	private double calculatePathLength(Path path) {
@@ -88,27 +112,29 @@ public class Vehicle extends Pane{
 			
            
         }
-		System.out.println(totalLength);
+		
         return totalLength;
     }
 	public void startPathTransition() {
 		pathLength = calculatePathLength(carPath);
-		System.out.println(pathLength);
+		
 		collidible = true;
 		this.moving = true;
+		carPathTransition.setDuration(Duration.millis(pathLength/0.25));
 		
-		carPathTransition.setRate(100.0/pathLength);
 		carPathTransition.setNode(this);
 		carPathTransition.setPath(carPath);
 		carPathTransition.setOrientation(OrientationType.ORTHOGONAL_TO_TANGENT);
 		carPathTransition.setCycleCount(1);
 		carPathTransition.setAutoReverse(false);
+		carPathTransition.setInterpolator(Interpolator.LINEAR);
 		carPathTransition.play();
 		carPathTransition.setOnFinished(event -> {
+			carRectangle.setStrokeWidth(1.35);
 			carRectangle.setStrokeType(StrokeType.INSIDE);
 			carRectangle.setStroke(Color.GREEN);
 			
-			handleDeath();
+			handleWin();
 		});
 	}
 	public void pausePathTransition(){
@@ -118,10 +144,40 @@ public class Vehicle extends Pane{
 		double pathLength;
 
 	}*/
+	public void handleWin(){
+		
+		this.pausePathTransition();
+		this.moving = false;
+		//wait function here
+		Vehicle v = this;
+		
+		AnimationTimer timer = new AnimationTimer() { 
+			double timeStamp = 0;
+			double totalMillisecondsPassed;
+			boolean stamped;
+            @Override 
+            public void handle(long now) { 
+				totalMillisecondsPassed = now/1000000.0;
+				if (stamped == false) {
+					timeStamp = now/1000000.0;
+					stamped = true;
+				}
+				if (totalMillisecondsPassed-timeStamp > 0) {
+					
+					v.getChildren().removeAll();
+					v.setVisible(false);
+					collidible = false;
+					this.stop();
+				}
+            } 
+        }; 
+        timer.start(); 
+	}
 	public void handleDeath(){
 		
 		this.pausePathTransition();
 		this.moving = false;
+		this.wrecked = true;
 		//wait function here
 		Vehicle v = this;
 		
@@ -144,16 +200,8 @@ public class Vehicle extends Pane{
 					this.stop();
 				}
             } 
-			
-			
         }; 
         timer.start(); 
-		
-		
-		
-		
-		
-
 	}
 
 	public boolean isCollidible() {

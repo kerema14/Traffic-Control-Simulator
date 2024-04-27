@@ -63,9 +63,10 @@ public class Main extends Application {
 				// switch to level scene by changing the root on the existing scene
 				LevelPane levelPane = new LevelPane();
 				// setting up the level with levelparser
-				levelPane.setLevel(levelParser);
+				
 				
 				scene.setRoot(levelPane);
+				levelPane.setLevel(levelParser);
 			}
 
 		});
