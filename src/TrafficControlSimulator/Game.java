@@ -35,7 +35,7 @@ public class Game {
         animationTimelines = new ArrayList<Timeline>();
         levelParser = levelPane.getLevelParser();
         this.levelPane = levelPane;
-        
+        this.trafficLights = levelParser.trafficLights;
         paths = levelParser.paths;
         createTraffic();
 
@@ -54,7 +54,7 @@ public class Game {
         totalMillisecondsPassed = now/1000000.0;
         millisecondsPassed = (now-oldNow)/1000000.0;
         
-        if (totalMillisecondsPassed-spawnTimeStamp > 300) {
+        if (totalMillisecondsPassed-spawnTimeStamp > 600) {
             spawnCar();
             spawnTimeStamp = totalMillisecondsPassed;
             
@@ -87,13 +87,12 @@ public class Game {
     public void carBehaviour(){
         for(Vehicle car : cars){
             if (car.isCollidible() == false) {
-                
                 levelPane.getChildren().remove(car);
                 continue;
             }
-            car.checkCars(this.cars);
-            car.checkTrafficLights(this.trafficLights);
+            car.checkAhead(trafficLights, cars);
         }
+        
 
     }
     

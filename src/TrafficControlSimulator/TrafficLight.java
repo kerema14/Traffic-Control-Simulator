@@ -21,6 +21,7 @@ public class TrafficLight {
 	private double circlePosX;
 	private double circlePosY;
 	private final double circleRadius = 800.0 / (15.0 * 8.0); // 1/8 of a tile
+	public Circle circle;
 
 	TrafficLight(double x1, double y1, double x2, double y2) {
 		linex1 = x1;
@@ -35,6 +36,7 @@ public class TrafficLight {
 		// setting circle's position to middle of the traffic line
 		circlePosX = (linex1 + linex2) / 2;
 		circlePosY = (liney1 + liney2) / 2;
+		this.setMode(TrafficLightMode.RED);
 	}
 
 	public Line getLine() {
@@ -75,6 +77,7 @@ public class TrafficLight {
 		circle.setStrokeWidth(1.0f);
 		circle.setStroke(Color.BLACK);
 		circle.setFill(Color.RED);
+		this.circle = circle;
 
 		return circle;
 	}
