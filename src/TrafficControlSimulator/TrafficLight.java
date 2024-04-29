@@ -37,6 +37,7 @@ public class TrafficLight {
 		circlePosX = (linex1 + linex2) / 2;
 		circlePosY = (liney1 + liney2) / 2;
 		this.setMode(TrafficLightMode.RED);
+		
 	}
 
 	public Line getLine() {
@@ -63,10 +64,12 @@ public class TrafficLight {
 	public void toggleLight() {
 		this.trafficLightMode = (this.getMode() == TrafficLightMode.GREEN) ? TrafficLightMode.RED
 				: TrafficLightMode.GREEN;
+		//circle.setFill(this.getColor());
 	}
 
 	public void setMode(TrafficLightMode trafficLightMode) {/* 0 for red light, */
 		this.trafficLightMode = trafficLightMode;
+		//circle.setFill(this.getColor());
 	}
 
 	public Circle getCircle() {

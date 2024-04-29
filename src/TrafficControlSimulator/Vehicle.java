@@ -8,8 +8,14 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.PathTransition;
 import javafx.animation.PathTransition.OrientationType;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -26,7 +32,11 @@ public class Vehicle extends Pane{
 	
 	public double pathLength;
 	Rectangle carRectangle;
-	public double startingRotate;
+	
+	double velocity = 0.25;
+	public Line centerAntennaLine;
+	public Line leftAntennaLine;
+	public Line rightAntennaLine;
 	
 	public Vehicle(Path path) {
 		this.paneX = ((MoveTo)(path.getElements().get(0))).getX();;
@@ -35,7 +45,8 @@ public class Vehicle extends Pane{
 		
 		
 		this.getChildren().add(createCar());
-		startingRotate = this.getRotate();
+		
+		//this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		
 	}
 	private Rectangle getCarRectangle(){
@@ -47,6 +58,7 @@ public class Vehicle extends Pane{
 	private Group createCar() {
 		Random rand = new Random();
 		carRectangle = new Rectangle(800.0 / 40.0, 800.0 / 80.0);
+		this.setMaxSize(200.0 / 40.0, 200.0 / 80.0);
 		Rectangle window = new Rectangle(800.0 / 80.0, 800.0 / 160.0,5,8);
 		int red = rand.nextInt(225);
 		int green = rand.nextInt(225);
@@ -57,11 +69,12 @@ public class Vehicle extends Pane{
 		window.setFill(Color.BLACK);
 		Group car = new Group(carRectangle,window);
 		car.getChildren().get(1).setLayoutY(-4);
-		/* 
-	    this.setMaxHeight(200.0 / 80.0);
-		this.setMaxWidth(200.0 / 40.0);
-		this.setWidth(200.0 / 40.0);
-		this.setHeight(200.0 / 80.0);*/
+		car.getChildren().add(centerAntennaLineCreator());
+		car.getChildren().add(leftAntennaLineCreator());
+		car.getChildren().add(rightAntennaLineCreator());
+		//car.getChildren().add(backLineCreator());
+		this.centerAntennaLine.setViewOrder(-1);
+		
 		
 		
 		
@@ -75,73 +88,112 @@ public class Vehicle extends Pane{
 	private boolean checkCollision(Vehicle v1,Vehicle v2){
 		boolean collision = false;
 		
-		if (v1.getBoundsInParent().intersects(v2.getBoundsInParent()) && (v1.isCollidible() && v2.isCollidible())&& (v1!=v2)) {
+		Bounds v1Bounds = v1.carRectangle.localToScene(v1.carRectangle.getBoundsInParent());
+		Bounds v2Bounds= v2.carRectangle.localToScene(v2.carRectangle.getBoundsInParent());
+		
+		
+		if (v1Bounds.intersects(v2Bounds)&& (v1.isCollidible() && v2.isCollidible())&& (v1!=v2)) {
+			
 			collision = true;
 			carRectangle.setStrokeType(StrokeType.INSIDE);
 			carRectangle.setStrokeWidth(3.35);
 			carRectangle.setStroke(Color.RED);
+			
+			
 		}
 		return collision;
 
 	}
-	public Line carController() {
+	private Line backLineCreator() {
 		Line line = new Line(0,5,-10,5);
-		line.setStroke(Color.BLACK);
+		line.setStroke(Color.RED);
 		line.startXProperty().bind(this.carRectangle.xProperty().add(0));
 		line.startYProperty().bind(carRectangle.yProperty().add(this.carRectangle.getHeight()/2));
-		line.endXProperty().bind(line.startXProperty().add(-10)); 
+		line.endXProperty().bind(line.startXProperty().add(-5)); 
         line.endYProperty().bind(line.startYProperty().add(0));
+		
+		line.setOpacity(100);
+		
         
-		return line;
+        return line;
 	}
+	public Line centerAntennaLineCreator() {
+		Line line = new Line(0,5,-10,5);
+		line.setStroke(Color.BLACK);
+		line.startXProperty().bind(this.carRectangle.xProperty().add(20));
+		line.startYProperty().bind(carRectangle.yProperty().add(this.carRectangle.getHeight()/2));
+		line.endXProperty().bind(line.startXProperty().add(5)); 
+        line.endYProperty().bind(line.startYProperty().add(0));
+		this.centerAntennaLine = line;
+		line.setOpacity(0.0);
+		
+        
+        return line;
+	}
+	public Line leftAntennaLineCreator() {
+		Line line = new Line(0,5,-10,5);
+		line.setStroke(Color.BLACK);
+		line.startXProperty().bind(this.carRectangle.xProperty().add(20));
+		line.startYProperty().bind(carRectangle.yProperty().add(0));
+		line.endXProperty().bind(line.startXProperty().add(5)); 
+        line.endYProperty().bind(line.startYProperty().add(-1));
+		this.leftAntennaLine = line;
+		line.setStrokeWidth(0.5);
+		line.setOpacity(0.0);
+		
+        
+        return line;
+	}
+	public Line rightAntennaLineCreator() {
+		Line line = new Line(0,5,-10,5);
+		line.setStroke(Color.BLACK);
+		line.startXProperty().bind(this.carRectangle.xProperty().add(20));
+		line.startYProperty().bind(carRectangle.yProperty().add(this.carRectangle.getHeight()));
+		line.endXProperty().bind(line.startXProperty().add(5)); 
+        line.endYProperty().bind(line.startYProperty().add(1));
+		this.rightAntennaLine = line;
+		line.setStrokeWidth(2.0);
+		line.setOpacity(0.0);
+		
+        
+        return line;
+	}
+	
 	public void checkAhead(ArrayList<TrafficLight> lights,ArrayList<Vehicle> cars){
 		boolean ahead = false;
-		
-		// Create a Line object ahead of the rectangle with the same rotation
-		
-		double aheadX = this.getTranslateX() + 10; //* Math.cos(Math.toRadians(this.getRotate()));
-        double aheadY = this.getTranslateY(); //+ 10 * Math.sin(Math.toRadians(this.getRotate()));
-		
-        Line lineAhead = new Line(this.getTranslateX(), this.getTranslateY(), aheadX , aheadY );
-        lineAhead.setVisible(true);
-		((LevelPane)(this.getParent())).getChildren().add(lineAhead); 
-		
-		try{
-			AnimationTimer timer = new AnimationTimer() { 
-				double timeStamp = 0;
-				double totalMillisecondsPassed;
-				boolean stamped;
-				@Override 
-				public void handle(long now) { 
-					totalMillisecondsPassed = now/1000000.0;
-					if (stamped == false) {
-						timeStamp = now/1000000.0;
-						stamped = true;
-					}
-					if (totalMillisecondsPassed-timeStamp > 2) {
-						
-						lineAhead.setVisible(false);
-						this.stop();
-					}
-				} 
-			}; 
-			timer.start();
-		}catch(Exception e){}
+		if (wrecked) {
+			return;
+		}
 
+		
+        ArrayList<Line> lines = new ArrayList<>();
+		lines.add(leftAntennaLine);
+		lines.add(centerAntennaLine);
+		lines.add(rightAntennaLine);
+        
 		for(Vehicle car:cars){
-			if (checkCars(car, lineAhead)) {
-				System.err.println("I see a car ahead");
-				pausePathTransition();
-				ahead = true;
+			if (checkCollision(this, car)) {
+				this.handleDeath();
+				return;
 			}
+			for(Line lineAhead:lines){
+				if (checkCars(car, lineAhead)) {
+					//System.err.println(lineAhead.toString()+" found a car");
+					pausePathTransition();
+					ahead = true;
+				}
+			}
+			
 		}
 
 		for(TrafficLight light:lights){
-			if (checkTrafficLight(light,lineAhead)) {
-				
-				pausePathTransition();
-				ahead = true;
-			} 
+			for(Line lineAhead:lines){
+				if (checkTrafficLight(light,lineAhead)) {
+					
+					pausePathTransition();
+					ahead = true;
+				} 
+			}
 		}
 		//((LevelPane)(this.getParent())).getChildren().remove(lineAhead); 
 
@@ -153,18 +205,35 @@ public class Vehicle extends Pane{
 	}
 	public boolean checkTrafficLight(TrafficLight light,Line lineAhead){
 		boolean redLightAhead = false;
+		Bounds lineBounds = lineAhead.localToScene(lineAhead.getBoundsInLocal());
 		if (light.getMode() == TrafficLightMode.GREEN) {
 			return false;
 		}
-		if (lineAhead.getBoundsInParent().intersects(light.circle.getBoundsInParent())) {
+		if (lineBounds.intersects(light.circle.getBoundsInParent())) {
 			redLightAhead = true;
 		}
 		return redLightAhead;
 	}
-	private boolean checkCars(Vehicle pane,Line lineAhead){
+	private boolean checkCars(Vehicle vehicle,Line lineAhead){
 		boolean carAhead = false;
-		if (lineAhead.getBoundsInParent().intersects(pane.getBoundsInParent())&&(pane!=this)&&(false==pane.isMoving())&&(pane.isCollidible())){
-			carAhead = true;
+		Bounds thisVehicleBounds = this.carRectangle.localToScene(vehicle.carRectangle.getBoundsInLocal());
+		Bounds vehicleBounds = vehicle.carRectangle.localToScene(vehicle.carRectangle.getBoundsInLocal());
+		Bounds lineBounds = lineAhead.localToScene(lineAhead.getBoundsInLocal());
+		if (lineBounds.intersects(vehicleBounds)&&(vehicle!=this)&&(vehicle.isCollidible())){
+			
+			if ((false==vehicle.isMoving())) {
+				carAhead = true;
+			}
+			else if (vehicle.isMoving() && (vehicle.carPath == this.carPath)) {
+				carAhead=true;
+			}/* 
+			else if (thisVehicleBounds.intersects(vehicle.carPath.getBoundsInParent()) && vehicle.isMoving()) {
+				carAhead = true;
+			}
+			else if (this.carPath.getBoundsInParent().intersects(vehicle.carPath.getBoundsInParent()) == false) {
+				carAhead = true;
+			}*/
+			
 		}
 		return carAhead;
 	}
@@ -199,11 +268,12 @@ public class Vehicle extends Pane{
         return totalLength;
     }
 	public void startPathTransition() {
+		
 		pathLength = calculatePathLength(carPath);
 		
 		collidible = true;
 		
-		double velocity = 0.2;
+		
 		carPathTransition.setDuration(Duration.millis(pathLength/velocity));
 		
 		carPathTransition.setNode(this);
@@ -224,6 +294,7 @@ public class Vehicle extends Pane{
 	
 	
 	public void continuePathTransition(){
+		
 		
 		carPathTransition.play();
 		
@@ -268,7 +339,7 @@ public class Vehicle extends Pane{
 	public void handleDeath(){
 		
 		this.pausePathTransition();
-		carPathTransition.stop();
+		
 		
 		this.wrecked = true;
 		//wait function here

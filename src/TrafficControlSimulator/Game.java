@@ -37,6 +37,10 @@ public class Game {
         this.levelPane = levelPane;
         this.trafficLights = levelParser.trafficLights;
         paths = levelParser.paths;
+        for(Path path:paths){
+            path.setOpacity(0.0);
+            levelPane.getChildren().add(path);
+        }
         createTraffic();
 
     }
