@@ -73,9 +73,7 @@ public class Game {
         totalMillisecondsPassed = now/1000000.0;
         millisecondsPassed = (now-oldNow)/1000000.0;
         
-        int currentCarNum = spawnedCarNum - (reachedCarNum + accidentNum);
-        
-        if (totalMillisecondsPassed-spawnTimeStamp > 600 && !levelPane.isGameOver && currentCarNum < 10) {
+        if (totalMillisecondsPassed-spawnTimeStamp > 600 && !levelPane.isGameOver && Math.random() < 0.3) {
             spawnCar();
             spawnTimeStamp = totalMillisecondsPassed;
             

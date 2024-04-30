@@ -108,17 +108,10 @@ public class LevelParser {
 					Path path = new Path();
 					path.getElements().add(new MoveTo(pathData[1],pathData[2]));
 					paths.add(pathIndex, path);
-
-					
-					
-					
 				} else if (line[2].equals("LineTo")) {
 					paths.get(pathIndex).getElements().add(new LineTo(pathData[1],pathData[2]));
 					//buradaki kod LineTo komutunun txt dosyasında MoveTo'dan önce yazılmış olmasına karşın 
 					//tedbirli olması amacıyla optimize edilecek ileride
-
-					
-					
 				}
 				break;
 			}
@@ -126,7 +119,6 @@ public class LevelParser {
 		}
 
 		createTiles();
-		
 
 		reader.close();
 	}
@@ -150,7 +142,6 @@ public class LevelParser {
 		}
 
 	}
-	
 	
 	// getter methods
 
