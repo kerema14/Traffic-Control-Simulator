@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	public static File levelFile;
-	public static LevelParser levelParser;
+	public static LevelParser levelParser = new LevelParser();
 
 	@Override // Override the start method in the Application class
 
@@ -38,7 +38,7 @@ public class Main extends Application {
 		gridPane.setVgap(1);
 		
 		Scene scene = new Scene(gridPane, 800, 800);
-
+		
 		selectFileButton.setOnMouseClicked(event -> {
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Select a level file");
@@ -51,22 +51,32 @@ public class Main extends Application {
 			levelFile = fileChooser.showOpenDialog(primaryStage);
 			try {
 				fileNameText.setText(levelFile.getName());
-				levelParser = new LevelParser();
 				levelParser.getLevelInfo(levelFile);
 			} catch (Exception e) {
 
 			}
 
 		});
+		
 		startGameButton.setOnMouseClicked(event -> {
 			if (levelFile != null) {
 				// switch to level scene by changing the root on the existing scene
 				LevelPane levelPane = new LevelPane();
+				
 				// setting up the level with levelparser
-				
-				
 				scene.setRoot(levelPane);
 				levelPane.setLevel(levelParser);
+			}else {
+				// setting the default level
+				File defaultLevelFile = new File("src/levels/level1.txt");
+				levelFile = defaultLevelFile;
+				levelParser.getLevelInfo(levelFile);
+				
+				// switch to level scene by changing the root on the existing scene
+				LevelPane levelPane = new LevelPane();
+				
+				// setting up the level with levelparser
+				switchLevel(scene, levelParser);
 			}
 
 		});
@@ -75,6 +85,13 @@ public class Main extends Application {
 		primaryStage.setScene(scene); // Place the scene in the stage
 		primaryStage.setResizable(false);
 		primaryStage.show();
+	}
+	
+	public static void switchLevel(Scene scene, LevelParser lparser) {
+		// setting up the level with levelparser
+		LevelPane lpane = new LevelPane();
+		scene.setRoot(lpane);
+		lpane.setLevel(lparser);
 	}
 
 	public static void main(String[] args) {

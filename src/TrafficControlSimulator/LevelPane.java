@@ -1,23 +1,35 @@
 package TrafficControlSimulator;
 
+import java.io.File;
+
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class LevelPane extends Pane{
+	
 	private LevelParser levelParser;
+	
 	public boolean isGameOver = false;
-	public double x = 800 * Math.random();
-	public double y = 800 * Math.random();
 	public Text accidentText;
 	public Text scoreText;
+	private int levelIndex;
+	
+	Text loseWinText = new Text();
+	Button endLevelBtn = new Button();
 	
 	public LevelPane() {
 		
 	}
 	
 	public void setLevel(LevelParser levelParser) {
+		this.levelIndex = levelParser.levelIndex;
+		
 		this.setStyle("-fx-background-color: #9cbcdc;");
 		this.levelParser = levelParser;
 		double tileWidth = levelParser.getLvlWidth() / levelParser.getLvlColumnNum();
@@ -80,16 +92,47 @@ public class LevelPane extends Pane{
 			this.getChildren().add(circle);
 		}
 		Game game = new Game();
+		
 		accidentText = new Text("Car Accident: "+levelParser.getCarAccident()/2+"/"+levelParser.getMaxCarAccident());
 		accidentText.setLayoutX(20);
 		accidentText.setLayoutY(20);
 		this.getChildren().add(accidentText);
+		
 		scoreText = new Text("Score: "+levelParser.getReachCars()+"/"+levelParser.getCarNumToWin());
 		scoreText.setLayoutX(20);
 		scoreText.setLayoutY(40);
 		this.getChildren().add(scoreText);
-		game.initData(this);
 		
+		// Lose / Win Text
+		loseWinText.setLayoutX(300);
+		loseWinText.setLayoutY(100);
+		loseWinText.setFont(Font.font("Arial", 45));
+		loseWinText.setVisible(false);
+		
+		//end level button
+		endLevelBtn.setLayoutX(300);
+		endLevelBtn.setLayoutY(100);
+		endLevelBtn.setFont(Font.font("Arial", 45));
+		endLevelBtn.setOnMouseClicked(event -> {
+			int nextLevelIndex = this.levelIndex + 1;
+			
+			if(nextLevelIndex < 5) {
+				this.levelParser = new LevelParser();
+				this.levelParser.getLevelInfo(new File("src/levels/level" + nextLevelIndex + ".txt"));
+			
+				clearLevel();
+				Main.switchLevel(this.getScene(), this.levelParser);
+			}
+		});
+		endLevelBtn.setVisible(false);
+		
+		this.getChildren().addAll(loseWinText, endLevelBtn);
+		
+		game.initData(this);
+	}
+
+	private void clearLevel() {
+		this.getChildren().clear();
 	}
 
 	public LevelParser getLevelParser() {

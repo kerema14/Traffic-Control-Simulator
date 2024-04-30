@@ -18,7 +18,9 @@ public class LevelParser {
 	private int maxCarAccident;
 	private int carAccident=0;
 	private int reachCars=0;
-	private double pathNum;
+	public int levelIndex;
+	
+	public File levelFile;
 
 	private ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
 	private ArrayList<int[]> roadTileInfo = new ArrayList<>();// type, rotation, gridX, gridY
@@ -36,6 +38,7 @@ public class LevelParser {
 
 	// method for parsing the level data from txt files and storing them
 	public void getLevelInfo(File levelFile) {
+		this.levelFile = levelFile;
 
 		Scanner reader = null;
 		try {
@@ -53,6 +56,13 @@ public class LevelParser {
 			String lineData = reader.nextLine();
 			String[] words = lineData.split(" ");
 			lines.add(words);
+		}
+		
+		//level Index
+		try {
+			levelIndex = Integer.parseInt(levelFile.getName().substring(levelFile.getName().length() - 5, levelFile.getName().length() - 4), 10);
+		} catch(Exception e) {
+			levelIndex = 0;
 		}
 
 		// metadata width, height, column, row, number of paths, number of cars to win,
