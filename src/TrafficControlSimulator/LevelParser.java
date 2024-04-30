@@ -16,6 +16,8 @@ public class LevelParser {
 	private int lvlPathNum;
 	private int carNumToWin;
 	private int maxCarAccident;
+	private int carAccident=0;
+	private int reachCars=0;
 	private double pathNum;
 
 	private ArrayList<int[]> buildingInfo = new ArrayList<>();// type, rotation, color, gridX, gridY
@@ -178,6 +180,18 @@ public class LevelParser {
 
 	public int getLvlRowNum() {
 		return lvlRowNum;
+	}
+	public int getCarAccident() {
+		return carAccident;
+	}
+	public int getReachCars() {
+		return reachCars;
+	}
+	public void increasCarAccident() {
+		carAccident++;
+	}
+	public void increasReachCars() {
+		reachCars++;
 	}
 
 }

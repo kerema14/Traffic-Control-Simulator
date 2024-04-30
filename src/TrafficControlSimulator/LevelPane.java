@@ -3,12 +3,15 @@ package TrafficControlSimulator;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 public class LevelPane extends Pane{
 	private LevelParser levelParser;
 	public boolean isGameOver = false;
 	public double x = 800 * Math.random();
 	public double y = 800 * Math.random();
+	public Text accidentText;
+	public Text scoreText;
 	
 	public LevelPane() {
 		
@@ -77,11 +80,25 @@ public class LevelPane extends Pane{
 			this.getChildren().add(circle);
 		}
 		Game game = new Game();
+		accidentText = new Text("Car Accident: "+levelParser.getCarAccident()/2+"/"+levelParser.getMaxCarAccident());
+		accidentText.setLayoutX(20);
+		accidentText.setLayoutY(20);
+		this.getChildren().add(accidentText);
+		scoreText = new Text("Score: "+levelParser.getReachCars()+"/"+levelParser.getCarNumToWin());
+		scoreText.setLayoutX(20);
+		scoreText.setLayoutY(40);
+		this.getChildren().add(scoreText);
 		game.initData(this);
 		
 	}
 
 	public LevelParser getLevelParser() {
 		return levelParser;
+	}
+	public void updateAccidentText() {
+		accidentText.setText("Car Accident: "+levelParser.getCarAccident()/2+"/"+levelParser.getMaxCarAccident());
+	}
+	public void updateScoreText() {
+		scoreText.setText("Score: "+levelParser.getReachCars()+"/"+levelParser.getCarNumToWin());
 	}
 }
