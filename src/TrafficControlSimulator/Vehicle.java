@@ -41,7 +41,7 @@ public class Vehicle extends Pane{
 		
 	}
 	
-	private Rectangle getCarRectangle(){
+	public Rectangle getCarRectangle(){
 		return this.carRectangle;
 	}
 	
@@ -87,7 +87,7 @@ public class Vehicle extends Pane{
 		return collision;
 
 	}
-	private Line backLineCreator() {
+	public Line backLineCreator() {
 		Line line = new Line(0,5,-10,5);
 		line.setStroke(Color.RED);
 		line.startXProperty().bind(this.carRectangle.xProperty().add(0));
@@ -263,9 +263,9 @@ public class Vehicle extends Pane{
 		carPathTransition.setInterpolator(Interpolator.LINEAR);
 		carPathTransition.play();
 		carPathTransition.setOnFinished(event -> {
-			carRectangle.setStrokeWidth(1.35);
-			carRectangle.setStrokeType(StrokeType.INSIDE);
-			carRectangle.setStroke(Color.GREEN);
+		carRectangle.setStrokeWidth(1.35);
+		carRectangle.setStrokeType(StrokeType.INSIDE);
+		carRectangle.setStroke(Color.GREEN);
 			
 			handleWin();
 		});

@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import javafx.animation.Timeline;
 import javafx.animation.*;
-import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 public class Game {
 
@@ -19,6 +17,7 @@ public class Game {
 	public ArrayList<TrafficLight> trafficLights = new ArrayList<>();
 	public ArrayList<Path> paths = new ArrayList<>();
 	public ArrayList<Vehicle> cars = new ArrayList<>();
+	public ArrayList<Rectangle> carDedect = new ArrayList<>();
 
 	public static ArrayList<Timeline> animationTimelines;
 	static Timeline carTimeline;
@@ -43,7 +42,14 @@ public class Game {
 		this.levelPane = levelPane;
 
 		this.trafficLights = levelParser.trafficLights;
+		
 		paths = levelParser.paths;
+		
+		for(Path path:paths) {
+			carDetected(((MoveTo)path.getElements().get(0)));
+		}
+		System.out.print(carDedect.size());
+		
 		for (Path path : paths) {
 			path.setOpacity(0.0);
 			levelPane.getChildren().add(path);
@@ -80,18 +86,29 @@ public class Game {
 	public void spawnCar() {
 		Random random = new Random();
 
-		Path carPath = paths.get(random.nextInt(paths.size()));
+		int randomPath = random.nextInt(paths.size());
+		Path carPath = paths.get(randomPath);
 
-		Vehicle v = new Vehicle(carPath);
+		boolean isFull = false;
+		for(Vehicle car :cars) {
+			if(car.collidible&&car.getBoundsInParent().intersects(carDedect.get(randomPath).getBoundsInParent())) {
+				isFull = true;
+				break;
+			}
+		}
 
-		cars.add(v);
-
-		v.setTranslateX(v.paneX);
-		v.setTranslateY(v.paneY);
-		levelPane.getChildren().add(v);
-		v.startPathTransition();
-
-		spawnedCarNum++;
+		if(!isFull) {
+			Vehicle v = new Vehicle(carPath);
+	
+			cars.add(v);
+	
+			v.setTranslateX(v.paneX);
+			v.setTranslateY(v.paneY);
+			levelPane.getChildren().add(v);
+			v.startPathTransition();
+	
+			spawnedCarNum++;
+		}
 	}
 
 	public void carBehaviour() {
@@ -145,6 +162,20 @@ public class Game {
 			}
 
 		}
+
+	}
+	
+	public void carDetected(MoveTo moveTo) {
+		Rectangle rectangle = new Rectangle();
+		rectangle.setLayoutX(moveTo.getX()-60);
+		rectangle.setLayoutY(moveTo.getY()-30);
+
+		rectangle.setWidth(100);
+		rectangle.setHeight(120);
+		rectangle.setFill(Color.rgb(15, 115, 128, 0));
+		rectangle.setViewOrder(-31);
+		carDedect.add(rectangle);
+		levelPane.getChildren().add(rectangle);
 
 	}
 
