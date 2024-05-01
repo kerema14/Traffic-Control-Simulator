@@ -128,6 +128,33 @@ public class LevelPane extends Pane{
 		game.initData(this);
 	}
 
+	public void setEmptyLevel() {
+		this.setStyle("-fx-background-color: #9cbcdc;");
+		
+		Line line;
+		for (int c = 0; c < 15; c++) {
+			for (int r = 0; r < 15; r++) {
+				//vertical lines
+				line = new Line();
+				double tileWidth = 800 / 15.0, tileHeight = 800 / 15.0;
+				line.setStartX(c * tileWidth );
+				line.setStartY(0);
+				line.setEndX(c * tileWidth);
+				line.setEndY(800);
+				line.setStyle("-fx-stroke: #8ca4bf;");
+				this.getChildren().add(line);
+				//horizontal lines
+				line = new Line();
+				line.setStartX(0);
+				line.setStartY(r * tileHeight);
+				line.setEndX(800);
+				line.setEndY(r * tileHeight);
+				line.setStyle("-fx-stroke: #8ca4bf;");
+				this.getChildren().add(line);
+			}
+		}
+	}
+	
 	private void clearLevel() {
 		this.getChildren().clear();
 	}
