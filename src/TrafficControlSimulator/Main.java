@@ -94,7 +94,7 @@ public class Main extends Application {
 			gp.add(emptyLevel, 0, 0);
 			gp.add(editorPane, 1, 0);
 			
-			Scene editorSccene = new Scene(gp, 1000, 800);
+			Scene editorSccene = new Scene(gp, 950, 800);
 			
 			primaryStage.setScene(editorSccene);
 		});
