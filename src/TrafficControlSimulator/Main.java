@@ -88,7 +88,7 @@ public class Main extends Application {
 		levelEditorButton.setOnMouseClicked(event -> {
 			LevelPane emptyLevel = new LevelPane();
 			emptyLevel.setEmptyLevel();
-			EditorPane editorPane = new EditorPane();
+			EditorPane editorPane = new EditorPane(emptyLevel);
 			
 			GridPane gp = new GridPane();
 			gp.add(emptyLevel, 0, 0);
