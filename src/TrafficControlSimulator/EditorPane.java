@@ -3,11 +3,13 @@ package TrafficControlSimulator;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 
 import  javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -17,6 +19,7 @@ import javafx.stage.FileChooser;
 public class EditorPane extends Pane{
 	int rotation = 0;
 	int colorIndex = 0;
+	ArrayList<Circle> pathCircles ;
 	StringBuilder levelToString =new StringBuilder();
 	String adderString ;
 	LevelPane levelPane;
@@ -141,7 +144,6 @@ public class EditorPane extends Pane{
 			line.setRotate(trafficlight.rotate);
 			adderString = "\nTrafficLight "+((int)(line.getBoundsInParent().getMinX()*100)/100.0)+" "+((int)(line.getBoundsInParent().getMinY()*100)/100.0)+" "+((int)(line.getBoundsInParent().getMaxX()*100)/100.0)+" "+((int)(line.getBoundsInParent().getMaxY()*100)/100.0);
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			Pane tlPane1 = new Pane();
 			tlPane1.getChildren().clear();
 			tlPane1.setViewOrder(-2);
@@ -161,7 +163,6 @@ public class EditorPane extends Pane{
 			double y_number = 53.8*mouseY;
 			adderString = "\nRoadTile 0 "+rotation+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			road.setLayoutX(x_number);
 			road.setLayoutY(y_number);
 			levelPane.getChildren().add(road);
@@ -177,7 +178,6 @@ public class EditorPane extends Pane{
 			double y_number = 53.8*mouseY;
 			adderString = "\nRoadTile 1 "+rotation+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			road.setLayoutX(x_number);
 			road.setLayoutY(y_number);
 			levelPane.getChildren().add(road);
@@ -193,7 +193,6 @@ public class EditorPane extends Pane{
 			double y_number = 53.7*mouseY;
 			adderString = "\nRoadTile 2 "+rotation+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			road.setLayoutX(x_number);
 			road.setLayoutY(y_number);
 			levelPane.getChildren().add(road);
@@ -209,7 +208,6 @@ public class EditorPane extends Pane{
 			double y_number = 53.8*mouseY;
 			adderString = "\nRoadTile 3 "+rotation+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			road.setLayoutX(x_number);
 			road.setLayoutY(y_number);
 			levelPane.getChildren().add(road);
@@ -226,10 +224,10 @@ public class EditorPane extends Pane{
 			double y_number = 53.8*mouseY;
 			adderString = "\nBuilding 0 "+rotation+" "+colorIndex+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			building.setLayoutX(x_number);
 			building.setLayoutY(y_number);
 			building.setViewOrder(-2);
+			buildingPathCircle(building);
 			levelPane.getChildren().add(building);
 		});
 		vbox2.getChildren().add(bigSquareBuilding);
@@ -243,7 +241,6 @@ public class EditorPane extends Pane{
 			double y_number = 53.8*mouseY;
 			adderString = "\nBuilding 1 "+rotation+" "+colorIndex+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			building.setLayoutX(x_number);
 			building.setLayoutY(y_number);
 			building.setViewOrder(-2);
@@ -260,7 +257,6 @@ public class EditorPane extends Pane{
 			double y_number = 53.8*mouseY;
 			adderString = "\nBuilding 2 "+rotation+" "+colorIndex+" "+mouseX +" "+mouseY;
 			levelToString.append(adderString);
-			System.out.print(levelToString);
 			building.setLayoutX(x_number);
 			building.setLayoutY(y_number);
 			building.setViewOrder(-2);
@@ -268,7 +264,32 @@ public class EditorPane extends Pane{
 		});
 		vbox2.getChildren().add(smallSquareBuilding);
 		this.getChildren().add(vbox2);
+	}
+	public void buildingPathCircle(Building building) {
+		Circle circle;
+		Circle circle1;
+		switch(building.getType()) {
+		case(0):
+			circle = new Circle(5);
+			circle.setFill(Color.web("#708090"));
+			circle.translateXProperty().bind(building.widthProperty().subtract(85));
+			circle.translateYProperty().bind(building.heightProperty().subtract(30));
+			circle.setViewOrder(-3);
+			circle1 = new Circle(5);
+			circle1.setFill(Color.web("#708090"));
+			circle1.translateXProperty().bind(building.widthProperty().subtract(35));
+			circle1.translateYProperty().bind(building.heightProperty().subtract(30));
+			circle1.setRotate(building.getRotation());
+			circle1.setViewOrder(-3);
+			pathCircles.add(circle);
+			pathCircles.add(circle1);
+			building.getChildren().addAll(circle,circle1);
+		}
 		
 		
 	}
+	public void roadTilesPathCircle(RoadTile roadTile) {
+		
+	}
+	
 }

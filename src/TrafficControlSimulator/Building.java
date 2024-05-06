@@ -177,5 +177,10 @@ public class Building extends Pane {
 	public double getPanePosY() {
 		return panePosY;
 	}
-
+	public int getType() {
+		return type;
+	}
+	public int getRotation() {
+		return rotation;
+	}
 }
