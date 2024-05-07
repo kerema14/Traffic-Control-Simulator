@@ -1,6 +1,7 @@
 package TrafficControlSimulator;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -168,6 +169,20 @@ public class Building extends Pane {
 		
 		return circle;
 		
+	}
+	
+	public String getColor() {
+		switch(colorIndex) {
+		case(0):
+			return "#fecb9b;";
+		case(1):
+			return "#8edbb7;";
+		case(2):
+			return "#bcb5e9;";
+		case(3):
+			return "#ef7e91;";
+		}
+		return null;
 	}
 
 	public double getPanePosX() {

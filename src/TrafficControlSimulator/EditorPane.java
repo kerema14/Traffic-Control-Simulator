@@ -12,20 +12,27 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.QuadCurve;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.PathElement;
 import javafx.scene.transform.Rotate;
 import javafx.stage.FileChooser;
 
 public class EditorPane extends Pane {
-	int rotation = 0;
-	int colorIndex = 0;
-	ArrayList<Circle> pathCircles = new ArrayList<Circle>();
-	StringBuilder levelToString = new StringBuilder();
-	String adderString;
-	LevelPane levelPane;
-	VBox vbox2;
+	private int rotation = 0;
+	private int colorIndex = 0;
+	private boolean isDrawingPath = false;
+	private String currentPathColor;
+	private ArrayList<Circle> pathPoints = new ArrayList<>();
+	private ArrayList<Circle> startPoints = new ArrayList<>();
+	private ArrayList<Circle> endPoints = new ArrayList<>();
+	private ArrayList<Line> markerLines = new ArrayList<>();
+	private ArrayList<Path> createdPaths = new ArrayList<>();
+	private StringBuilder levelToString = new StringBuilder();
+	private String adderString;
+	private LevelPane levelPane;
+	private VBox vbox2;
 
 	public EditorPane(LevelPane lp) {
 		this.setStyle("-fx-background-color: #bbdeff;");
@@ -79,7 +86,11 @@ public class EditorPane extends Pane {
 		Button rotateButton = new Button("Rotate");
 		rotateButton.setStyle("-fx-background-color: #839bb2; -fx-text-fill: #ffffff;");
 		rotateButton.setOnAction(e -> {
-			rotation += 90;
+			if (rotation == 270) {
+				rotation = 0;
+			} else {
+				rotation += 90;
+			}
 			createNodeButtons(rotation, colorIndex);
 		});
 
@@ -108,12 +119,32 @@ public class EditorPane extends Pane {
 
 		Button show_hideButton = new Button("Show/Hide Markers");
 		show_hideButton.setStyle("-fx-background-color: #839bb2; -fx-text-fill: #ffffff; -fx-text-overrun: ellipsis;");
+		show_hideButton.setOnMouseClicked(event -> {
+
+			changeVisibilityMarkers();
+		});
 
 		vbox.getChildren().addAll(rotateButton, saveButton, show_hideButton);
 		vbox.setSpacing(20);
 		vbox.setLayoutX(20);
 		vbox.setLayoutY(80);
 		this.getChildren().add(vbox);
+	}
+
+	private void changeVisibilityMarkers() {
+		for (Circle c : startPoints) {
+			c.setVisible(!c.isVisible());
+		}
+		for (Circle c : endPoints) {
+			c.setVisible(!c.isVisible());
+		}
+		for (Circle c : pathPoints) {
+			c.setVisible(!c.isVisible());
+		}
+		
+		for(Line l : markerLines) {
+			l.setVisible(!l.isVisible());
+		}
 	}
 
 	private void createNodeButtons(int rotation, int colorIndex) {
@@ -300,53 +331,69 @@ public class EditorPane extends Pane {
 	}
 
 	private void buildingPathCircle(Building building) {
-		Circle circle1 = new Circle(5);
-		circle1.setFill(Color.web("#708090"));
-		circle1.setViewOrder(-3);
-
-		Circle circle2 = new Circle(5);
-		circle2.setFill(Color.web("#708090"));
-		circle2.setViewOrder(-3);
-		
-		if(building.getType() == 2) {
-			circle1.setTranslateX(building.getBoundsInLocal().getWidth() / 2.0);
-			circle1.setTranslateY(building.getBoundsInLocal().getHeight() / 2.0);
-
-			pathCircles.add(circle1);
-
-			building.getChildren().add(circle1);
-		}else {
-			circle1.setCenterX(building.getBoundsInLocal().getWidth() / 4.0);
-			circle1.setCenterY(building.getBoundsInLocal().getHeight() * 3.0 / 4.0);
+		Circle startPoint = new Circle(8);
+		startPoint.setStyle("-fx-fill: " + building.getColor());
+		startPoint.setViewOrder(-3);
+		startPoint.setOnMouseClicked(event -> {
+			isDrawingPath = true;
+			currentPathColor = building.getColor();
 			
-			circle2.setCenterX(building.getBoundsInLocal().getWidth() * 3.0 / 4.0);
-			circle2.setCenterY(building.getBoundsInLocal().getHeight() * 3.0 / 4.0);
+			Path path = new Path();
 
-			circle1.getTransforms().add(new Rotate(building.getRotation(),
-			building.getBoundsInLocal().getCenterX(),
-			building.getBoundsInLocal().getCenterY()));
+			path.getElements()
+					.add(new MoveTo(startPoint.localToScene(startPoint.getCenterX(), startPoint.getCenterY()).getX(),
+							startPoint.localToScene(startPoint.getCenterX(), startPoint.getCenterY()).getY()));
+			createdPaths.add(path);
+		});
+
+		Circle endPoint = new Circle(8);
+		endPoint.setFill(Color.web("#708090"));
+		endPoint.setViewOrder(-3);
+		endPoint.setOnMouseClicked(event -> {
+			pathDrawer(endPoint);
+			isDrawingPath = false;
+		});
+
+		if (building.getType() == 2) {
+			startPoint.setStroke(Color.BLACK);
+			startPoint.setStrokeWidth(1);
 			
-			circle2.getTransforms().add(new Rotate(building.getRotation(),
-			building.getBoundsInLocal().getCenterX(),
-			building.getBoundsInLocal().getCenterY()));
+			startPoint.setTranslateX(building.getBoundsInLocal().getWidth() / 2.0);
+			startPoint.setTranslateY(building.getBoundsInLocal().getHeight() / 2.0);
 
-			pathCircles.add(circle1);
-			pathCircles.add(circle2);
+			pathPoints.add(startPoint);
 
-			building.getChildren().addAll(circle1, circle2);
+			building.getChildren().add(startPoint);
+		} else {
+			startPoint.setCenterX(building.getBoundsInLocal().getWidth() / 4.0);
+			startPoint.setCenterY(building.getBoundsInLocal().getHeight() * 3.0 / 4.0);
+
+			endPoint.setCenterX(building.getBoundsInLocal().getWidth() * 3.0 / 4.0);
+			endPoint.setCenterY(building.getBoundsInLocal().getHeight() * 3.0 / 4.0);
+
+			startPoint.getTransforms().add(new Rotate(building.getRotation(), building.getBoundsInLocal().getCenterX(),
+					building.getBoundsInLocal().getCenterY()));
+
+			endPoint.getTransforms().add(new Rotate(building.getRotation(), building.getBoundsInLocal().getCenterX(),
+					building.getBoundsInLocal().getCenterY()));
+
+			startPoints.add(startPoint);
+			endPoints.add(endPoint);
+
+			building.getChildren().addAll(startPoint, endPoint);
 		}
 
 	}
 
 	private void roadTilesPathCircle(RoadTile roadTile) {
-		Circle c1 = new Circle(5);
-		Circle c2 = new Circle(5);
-		Circle c3 = new Circle(5);
-		Circle c4 = new Circle(5);
-		Circle c5 = new Circle(5);
-		Circle c6 = new Circle(5);
-		Circle c7 = new Circle(5);
-		
+		Circle c1 = new Circle(8);
+		Circle c2 = new Circle(8);
+		Circle c3 = new Circle(8);
+		Circle c4 = new Circle(8);
+		Circle c5 = new Circle(8);
+		Circle c6 = new Circle(8);
+		Circle c7 = new Circle(8);
+
 		c1.setFill(Color.web("#708090"));
 		c1.setViewOrder(-3);
 		c2.setFill(Color.web("#708090"));
@@ -362,19 +409,43 @@ public class EditorPane extends Pane {
 		c7.setFill(Color.web("#708090"));
 		c7.setViewOrder(-3);
 		
+		c1.setOnMouseClicked(event -> {
+			pathDrawer(c1);
+		});
+		c2.setOnMouseClicked(event -> {
+			pathDrawer(c2);
+		});
+		c3.setOnMouseClicked(event -> {
+			pathDrawer(c3);
+		});
+		c4.setOnMouseClicked(event -> {
+			pathDrawer(c4);
+		});
+		c5.setOnMouseClicked(event -> {
+			pathDrawer(c5);
+		});
+		c6.setOnMouseClicked(event -> {
+			pathDrawer(c6);
+		});
+		c7.setOnMouseClicked(event -> {
+			pathDrawer(c7);
+		});
+		
+		
+
 		switch (roadTile.getType()) {
 		case (0):
 			c1.setCenterX(roadTile.getBoundsInParent().getWidth() / 2.0);
 			c1.setCenterY(roadTile.getBoundsInParent().getHeight() / 4.0);
-			
+
 			c2.setCenterX(roadTile.getBoundsInParent().getWidth() / 2.0);
 			c2.setCenterY(roadTile.getBoundsInParent().getHeight() * 3.0 / 4.0);
-			
+
 			c1.getTransforms().add(new Rotate(rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c2.getTransforms().add(new Rotate(rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
-			
-			pathCircles.add(c1);
-			pathCircles.add(c2);
+
+			pathPoints.add(c1);
+			pathPoints.add(c2);
 
 			roadTile.getChildren().addAll(c1, c2);
 			break;
@@ -382,25 +453,25 @@ public class EditorPane extends Pane {
 		case (1):
 			c1.setCenterX(roadTile.getBoundsInParent().getWidth() / 4.0);
 			c1.setCenterY(roadTile.getBoundsInParent().getHeight());
-		
+
 			c2.setCenterX(roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0);
 			c2.setCenterY(roadTile.getBoundsInParent().getHeight());
-			
+
 			c3.setCenterX(0);
 			c3.setCenterY(roadTile.getBoundsInParent().getHeight() / 4.0);
-			
+
 			c4.setCenterX(0);
 			c4.setCenterY(roadTile.getBoundsInParent().getHeight() * 3.0 / 4.0);
-			
+
 			c5.setCenterX((roadTile.getBoundsInParent().getWidth() / 4.0) * Math.cos(Math.toRadians(45)));
 			c5.setCenterY(roadTile.getBoundsInParent().getHeight() * (1 - Math.sin(Math.toRadians(45)) / 4.0));
-			
+
 			c6.setCenterX((roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0) * Math.cos(Math.toRadians(60)));
 			c6.setCenterY(roadTile.getBoundsInParent().getHeight() * (1 - Math.sin(Math.toRadians(60)) * 3.0 / 4.0));
-		
+
 			c7.setCenterX((roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0) * Math.cos(Math.toRadians(30)));
 			c7.setCenterY(roadTile.getBoundsInParent().getHeight() * (1 - Math.sin(Math.toRadians(30)) * 3.0 / 4.0));
-			
+
 			c1.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c2.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c3.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
@@ -408,69 +479,96 @@ public class EditorPane extends Pane {
 			c5.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c6.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c7.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
-			
-			pathCircles.add(c1);
-			pathCircles.add(c2);
-			pathCircles.add(c3);
-			pathCircles.add(c4);
-			pathCircles.add(c5);
-			pathCircles.add(c6);
-			pathCircles.add(c7);
-			
+
+			pathPoints.add(c1);
+			pathPoints.add(c2);
+			pathPoints.add(c3);
+			pathPoints.add(c4);
+			pathPoints.add(c5);
+			pathPoints.add(c6);
+			pathPoints.add(c7);
+
 			roadTile.getChildren().addAll(c1, c2, c3, c4, c5, c6, c7);
 			break;
 
 		case (2):
 			c1.setCenterX(roadTile.getBoundsInParent().getWidth() / 4.0);
 			c1.setCenterY(roadTile.getBoundsInParent().getHeight() / 4.0);
-	
+
 			c2.setCenterX(roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0);
 			c2.setCenterY(roadTile.getBoundsInParent().getHeight() / 4.0);
-		
+
 			c3.setCenterX(roadTile.getBoundsInParent().getWidth() / 4.0);
 			c3.setCenterY(roadTile.getBoundsInParent().getHeight() * 3.0 / 4.0);
-		
+
 			c4.setCenterX(roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0);
 			c4.setCenterY(roadTile.getBoundsInParent().getHeight() * 3.0 / 4.0);
-			
+
 			c1.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c2.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c3.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c4.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
-			
-			pathCircles.add(c1);
-			pathCircles.add(c2);
-			pathCircles.add(c3);
-			pathCircles.add(c4);
-			
+
+			pathPoints.add(c1);
+			pathPoints.add(c2);
+			pathPoints.add(c3);
+			pathPoints.add(c4);
+
 			roadTile.getChildren().addAll(c1, c2, c3, c4);
 			break;
 
 		case (3):
 			c1.setCenterX(roadTile.getBoundsInParent().getWidth() / 4.0);
 			c1.setCenterY(roadTile.getBoundsInParent().getHeight() / 4.0);
-	
+
 			c2.setCenterX(roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0);
 			c2.setCenterY(roadTile.getBoundsInParent().getHeight() / 4.0);
-		
+
 			c3.setCenterX(roadTile.getBoundsInParent().getWidth() / 4.0);
 			c3.setCenterY(roadTile.getBoundsInParent().getHeight() * 3.0 / 4.0);
-		
+
 			c4.setCenterX(roadTile.getBoundsInParent().getWidth() * 3.0 / 4.0);
 			c4.setCenterY(roadTile.getBoundsInParent().getHeight() * 3.0 / 4.0);
-			
+
 			c1.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c2.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c3.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
 			c4.getTransforms().add(new Rotate(-rotation, roadTile.tileSize / 2.0, roadTile.tileSize / 2.0));
-			
-			pathCircles.add(c1);
-			pathCircles.add(c2);
-			pathCircles.add(c3);
-			pathCircles.add(c4);
-			
+
+			pathPoints.add(c1);
+			pathPoints.add(c2);
+			pathPoints.add(c3);
+			pathPoints.add(c4);
+
 			roadTile.getChildren().addAll(c1, c2, c3, c4);
 			break;
+		}
+	}
+	
+	private void pathDrawer(Circle point) {
+		if (isDrawingPath) {
+			Line line;
+			if(createdPaths.getLast().getElements().getLast() instanceof LineTo) {
+				line = new Line(((LineTo) createdPaths.getLast().getElements().getLast()).getX(),
+						((LineTo) createdPaths.getLast().getElements().getLast()).getY(),
+						point.localToScene(point.getCenterX(), point.getCenterY()).getX(),
+						point.localToScene(point.getCenterX(), point.getCenterY()).getY());
+				
+			}else {
+				line = new Line(((MoveTo) createdPaths.getLast().getElements().getLast()).getX(),
+						((MoveTo) createdPaths.getLast().getElements().getLast()).getY(),
+						point.localToScene(point.getCenterX(), point.getCenterY()).getX(),
+						point.localToScene(point.getCenterX(), point.getCenterY()).getY());
+			}
+			line.setViewOrder(-10);
+			line.setStyle("-fx-stroke: " + currentPathColor + "-fx-stroke-width: 3;");
+			
+			markerLines.add(line);
+
+			levelPane.getChildren().add(line);
+
+			createdPaths.getLast().getElements().add(new LineTo(point.localToScene(point.getCenterX(), point.getCenterY()).getX(), 
+					point.localToScene(point.getCenterX(), point.getCenterY()).getY()));
 		}
 	}
 
