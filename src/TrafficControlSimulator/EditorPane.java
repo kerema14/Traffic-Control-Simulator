@@ -96,7 +96,17 @@ public class EditorPane extends Pane {
 
 		Button saveButton = new Button("Save Map");
 		saveButton.setStyle("-fx-background-color: #839bb2; -fx-text-fill: #ffffff;");
-		saveButton.setOnAction(e -> {
+		saveButton.setOnAction(event -> {
+			for(int i = 0;i<createdPaths.size();i++){
+				for(int j = 0;j<createdPaths.get(i).getElements().size();j++) {
+					if(j ==0) {
+						adderString = "\nPath "+i+" MoveTo "+((MoveTo)createdPaths.get(i).getElements().get(j)).getX()+" "+((MoveTo)createdPaths.get(i).getElements().get(j)).getY();
+					}else {
+						adderString = "\nPath "+i+" LineTo "+((LineTo)createdPaths.get(i).getElements().get(j)).getX()+" "+((LineTo)createdPaths.get(i).getElements().get(j)).getY();
+					}
+					levelToString.append(adderString);
+				}
+			}
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Level to txt");
 			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files", "*.txt"));
@@ -386,13 +396,13 @@ public class EditorPane extends Pane {
 	}
 
 	private void roadTilesPathCircle(RoadTile roadTile) {
-		Circle c1 = new Circle(8);
-		Circle c2 = new Circle(8);
-		Circle c3 = new Circle(8);
-		Circle c4 = new Circle(8);
-		Circle c5 = new Circle(8);
-		Circle c6 = new Circle(8);
-		Circle c7 = new Circle(8);
+		Circle c1 = new Circle(6);
+		Circle c2 = new Circle(6);
+		Circle c3 = new Circle(6);
+		Circle c4 = new Circle(6);
+		Circle c5 = new Circle(6);
+		Circle c6 = new Circle(6);
+		Circle c7 = new Circle(6);
 
 		c1.setFill(Color.web("#708090"));
 		c1.setViewOrder(-3);
