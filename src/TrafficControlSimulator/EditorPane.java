@@ -386,6 +386,22 @@ public class EditorPane extends Pane {
 
 			endPoint.getTransforms().add(new Rotate(building.getRotation(), building.getBoundsInLocal().getCenterX(),
 					building.getBoundsInLocal().getCenterY()));
+			
+			if(rotation == 90) {
+				startPoint.setTranslateX(building.getTileSize() * 1.5);
+				startPoint.setTranslateY(building.getTileSize() * 0.2);
+				
+				endPoint.setTranslateX(building.getTileSize() * 1.5);
+				endPoint.setTranslateY(-building.getTileSize() * 0.2);
+			}
+			if(rotation == 270) {
+				startPoint.setTranslateX(-building.getTileSize() * 1.5);
+				startPoint.setTranslateY(-building.getTileSize() * 0.2);
+				
+				endPoint.setTranslateX(-building.getTileSize() * 1.5);
+				endPoint.setTranslateY(building.getTileSize() * 0.2);
+				
+			}
 
 			startPoints.add(startPoint);
 			endPoints.add(endPoint);

@@ -48,7 +48,6 @@ public class Game {
 		for(Path path:paths) {
 			carDetected(((MoveTo)path.getElements().get(0)));
 		}
-		System.out.print(carDedect.size());
 		
 		for (Path path : paths) {
 			path.setOpacity(0.0);
