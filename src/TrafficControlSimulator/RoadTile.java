@@ -15,7 +15,7 @@ public class RoadTile extends Pane {
 	private int gridY;
 	private double panePosX;
 	private double panePosY;
-	private double tileSize;
+	public double tileSize;
 
 	public RoadTile(int type, int rotation, int gridX, int gridY, double tileSize) {
 		this.type = type;
@@ -31,7 +31,6 @@ public class RoadTile extends Pane {
 		addLines();
 	}
 
-	// method for getting road tile ImageView
 	private void addRoad() {
 		Shape road = createRoad();
 		this.getChildren().add(road);
@@ -149,5 +148,13 @@ public class RoadTile extends Pane {
 
 	public double getPanePosY() {
 		return panePosY;
+	}
+	
+	public int getType() {
+		return type;
+	}
+	
+	public int getRotation() {
+		return rotation;
 	}
 }
