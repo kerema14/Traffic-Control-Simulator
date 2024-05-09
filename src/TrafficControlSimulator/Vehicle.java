@@ -76,7 +76,7 @@ public class Vehicle extends Pane{
 		Bounds v1Bounds = v1.carRectangle.localToScene(v1.carRectangle.getBoundsInParent());
 		Bounds v2Bounds= v2.carRectangle.localToScene(v2.carRectangle.getBoundsInParent());
 		
-		if (v1Bounds.intersects(v2Bounds)&& (v1.isCollidible() && v2.isCollidible())&& (v1!=v2)) {
+		if (v1Bounds.intersects(v2Bounds)&& (v1.isCollidible() && v2.isCollidible())&& (v1!=v2)&&v1.carPathTransition.getCurrentTime().toSeconds()>0.1&&v2.carPathTransition.getCurrentTime().toSeconds()>0.1) {
 			
 			collision = true;
 			carRectangle.setStrokeType(StrokeType.INSIDE);
