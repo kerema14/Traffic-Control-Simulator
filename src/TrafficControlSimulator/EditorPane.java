@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import java.io.BufferedWriter;
@@ -97,6 +100,7 @@ public class EditorPane extends Pane {
 		Button saveButton = new Button("Save Map");
 		saveButton.setStyle("-fx-background-color: #839bb2; -fx-text-fill: #ffffff;");
 		saveButton.setOnAction(event -> {
+			//To add Paths to levelToString 
 			for(int i = 0;i<createdPaths.size();i++){
 				for(int j = 0;j<createdPaths.get(i).getElements().size();j++) {
 					if(j ==0) {
@@ -107,6 +111,7 @@ public class EditorPane extends Pane {
 					levelToString.append(adderString);
 				}
 			}
+			//Choose the file name and location
 			FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("Level to txt");
 			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files", "*.txt"));
@@ -126,7 +131,7 @@ public class EditorPane extends Pane {
 			}
 
 		});
-
+		
 		Button show_hideButton = new Button("Show/Hide Markers");
 		show_hideButton.setStyle("-fx-background-color: #839bb2; -fx-text-fill: #ffffff; -fx-text-overrun: ellipsis;");
 		show_hideButton.setOnMouseClicked(event -> {
@@ -140,7 +145,7 @@ public class EditorPane extends Pane {
 		vbox.setLayoutY(80);
 		this.getChildren().add(vbox);
 	}
-
+	//paths and lines visibility
 	private void changeVisibilityMarkers() {
 		for (Circle c : startPoints) {
 			c.setVisible(!c.isVisible());
@@ -156,7 +161,7 @@ public class EditorPane extends Pane {
 			l.setVisible(!l.isVisible());
 		}
 	}
-
+	//Create buildings , traffic lights and roads
 	private void createNodeButtons(int rotation, int colorIndex) {
 		this.getChildren().remove(vbox2);
 		vbox2 = new VBox();
@@ -199,6 +204,7 @@ public class EditorPane extends Pane {
 			circle1.setViewOrder(-1);
 			Line line = trafficlight.getLine();
 			line.setRotate(trafficlight.rotate);
+			//TrafficLights to String 
 			adderString = "\nTrafficLight " + ((int) (line.getBoundsInParent().getMinX() * 100) / 100.0) + " "
 					+ ((int) (line.getBoundsInParent().getMinY() * 100) / 100.0) + " "
 					+ ((int) (line.getBoundsInParent().getMaxX() * 100) / 100.0) + " "
@@ -223,11 +229,13 @@ public class EditorPane extends Pane {
 			int mouseY = (int) (e.getSceneY() / 52.8);
 			double x_number = 53.4 * mouseX;
 			double y_number = 53.8 * mouseY;
+			//Road to String 
 			adderString = "\nRoadTile 0 " + rotation + " " + mouseX + " " + mouseY;
 			levelToString.append(adderString);
 			road.setLayoutX(x_number);
 			road.setLayoutY(y_number);
 			road.setViewOrder(-2);
+			//add Path Circles
 			roadTilesPathCircle(road);
 			levelPane.getChildren().add(road);
 		});
@@ -240,6 +248,7 @@ public class EditorPane extends Pane {
 			int mouseY = (int) (e.getSceneY() / 52.8);
 			double x_number = 53.4 * mouseX;
 			double y_number = 53.8 * mouseY;
+			//Road to String 
 			adderString = "\nRoadTile 1 " + rotation + " " + mouseX + " " + mouseY;
 			levelToString.append(adderString);
 			road.setLayoutX(x_number);
@@ -294,6 +303,7 @@ public class EditorPane extends Pane {
 			int mouseY = (int) (e.getSceneY() / 52.8);
 			double x_number = 53.4 * mouseX;
 			double y_number = 53.8 * mouseY;
+			//Building to String 
 			adderString = "\nBuilding 0 " + rotation + " " + colorIndex + " " + mouseX + " " + mouseY;
 			levelToString.append(adderString);
 			building.setLayoutX(x_number);
@@ -571,6 +581,7 @@ public class EditorPane extends Pane {
 		}
 	}
 	
+	//Create line to 2 Circle 
 	private void pathDrawer(Circle point) {
 		if (isDrawingPath) {
 			Line line;

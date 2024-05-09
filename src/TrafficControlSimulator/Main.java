@@ -1,4 +1,6 @@
-
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import java.io.File;
@@ -84,7 +86,7 @@ public class Main extends Application {
 			}
 
 		});
-		
+		//Open Level parser
 		levelEditorButton.setOnMouseClicked(event -> {
 			LevelPane emptyLevel = new LevelPane();
 			emptyLevel.setEmptyLevel();
@@ -93,8 +95,8 @@ public class Main extends Application {
 			GridPane gp = new GridPane();
 			gp.add(emptyLevel, 0, 0);
 			gp.add(editorPane, 1, 0);
-			
-			Scene editorSccene = new Scene(gp, 950, 800);
+		
+			Scene editorSccene = new Scene(gp, 950, 800);//Create new bigger Scene for EditorPane
 			
 			primaryStage.setScene(editorSccene);
 		});

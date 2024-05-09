@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import java.io.File;
@@ -120,8 +123,6 @@ public class LevelParser {
 					paths.add(pathIndex, path);
 				} else if (line[2].equals("LineTo")) {
 					paths.get(pathIndex).getElements().add(new LineTo(pathData[1],pathData[2]));
-					//buradaki kod LineTo komutunun txt dosyasında MoveTo'dan önce yazılmış olmasına karşın 
-					//tedbirli olması amacıyla optimize edilecek ileride
 				}
 				break;
 			}
@@ -153,6 +154,12 @@ public class LevelParser {
 
 	}
 	
+	public void increasCarAccident() {
+		carAccident++;
+	}
+	public void increasReachCars() {
+		reachCars++;
+	}
 	// getter methods
 
 	public int getLvlPathNum() {
@@ -188,11 +195,6 @@ public class LevelParser {
 	public int getReachCars() {
 		return reachCars;
 	}
-	public void increasCarAccident() {
-		carAccident++;
-	}
-	public void increasReachCars() {
-		reachCars++;
-	}
+	
 
 }

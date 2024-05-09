@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import java.util.ArrayList;
@@ -84,7 +87,7 @@ public class Game {
 
 	public void spawnCar() {
 		Random random = new Random();
-
+		//Creating cars in random paths 
 		int randomPath = random.nextInt(paths.size());
 		Path carPath = paths.get(randomPath);
 
@@ -95,7 +98,7 @@ public class Game {
 				break;
 			}
 		}
-
+		//if path is Full don't spawn car 
 		if(!isFull) {
 			Vehicle v = new Vehicle(carPath);
 	
@@ -137,7 +140,7 @@ public class Game {
 				|| levelParser.getReachCars() >= levelParser.getCarNumToWin()) {
 			// Pause to whole game
 			for (Vehicle car : cars) {
-				car.pausePathTransition();
+				car.carPathTransition.pause();
 			}
 
 			if (levelParser.getCarAccident() / 2 >= levelParser.getMaxCarAccident()) {
@@ -163,7 +166,7 @@ public class Game {
 		}
 
 	}
-	
+	//rectangle to check if the car will hit another car when it is created 
 	public void carDetected(MoveTo moveTo) {
 		Rectangle rectangle = new Rectangle();
 		rectangle.setLayoutX(moveTo.getX()-60);

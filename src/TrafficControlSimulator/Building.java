@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import javafx.scene.layout.Pane;

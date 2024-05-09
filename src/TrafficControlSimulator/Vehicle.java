@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import java.util.ArrayList;
@@ -37,7 +40,6 @@ public class Vehicle extends Pane{
 		
 		this.getChildren().add(createCar());
 		
-		//this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 		
 	}
 	
@@ -46,6 +48,7 @@ public class Vehicle extends Pane{
 	}
 	
 	private Group createCar() {
+		//Create a Car with Random Color 
 		Random rand = new Random();
 		carRectangle = new Rectangle(800.0 / 40.0, 800.0 / 80.0);
 		this.setMaxSize(200.0 / 40.0, 200.0 / 80.0);
@@ -57,6 +60,7 @@ public class Vehicle extends Pane{
 		carRectangle.setArcHeight(5);
 		carRectangle.setArcWidth(5);
 		window.setFill(Color.BLACK);
+		//Add car lines for stop when car ahead or traffic light 
 		Group car = new Group(carRectangle,window);
 		car.getChildren().get(1).setLayoutY(-4);
 		car.getChildren().add(centerAntennaLineCreator());
@@ -75,7 +79,7 @@ public class Vehicle extends Pane{
 	
 		Bounds v1Bounds = v1.carRectangle.localToScene(v1.carRectangle.getBoundsInParent());
 		Bounds v2Bounds= v2.carRectangle.localToScene(v2.carRectangle.getBoundsInParent());
-		
+
 		if (v1Bounds.intersects(v2Bounds)&& (v1.isCollidible() && v2.isCollidible())&& (v1!=v2)&&v1.carPathTransition.getCurrentTime().toSeconds()>0.1&&v2.carPathTransition.getCurrentTime().toSeconds()>0.1) {
 			
 			collision = true;
@@ -156,27 +160,25 @@ public class Vehicle extends Pane{
 			}
 			for(Line lineAhead:lines){
 				if (checkCars(car, lineAhead)) {
-					//System.err.println(lineAhead.toString()+" found a car");
-					pausePathTransition();
+					this.carPathTransition.pause();
 					ahead = true;
 				}
 			}
 			
 		}
-
+		//Check all Traffic lights 
 		for(TrafficLight light:lights){
 			for(Line lineAhead:lines){
 				if (checkTrafficLight(light,lineAhead)) {
 					
-					pausePathTransition();
+					this.carPathTransition.pause();
 					ahead = true;
 				} 
 			}
 		}
-		//((LevelPane)(this.getParent())).getChildren().remove(lineAhead); 
-
+		//İf the front of the car is empty, continue 
 		if (ahead==false) {
-			continuePathTransition();
+			this.carPathTransition.play();
 			
 		}
 
@@ -206,19 +208,12 @@ public class Vehicle extends Pane{
 			}
 			else if (vehicle.isMoving() && (vehicle.carPath == this.carPath)) {
 				carAhead=true;
-			}/* 
-			else if (thisVehicleBounds.intersects(vehicle.carPath.getBoundsInParent()) && vehicle.isMoving()) {
-				carAhead = true;
 			}
-			else if (this.carPath.getBoundsInParent().intersects(vehicle.carPath.getBoundsInParent()) == false) {
-				carAhead = true;
-			}*/
-			
 		}
 		return carAhead;
 	}
 	
-	
+	//calculatePathLength for set Duration of path transistion
 	private double calculatePathLength(Path path) {
         double totalLength = 0.0;
 		LineTo previousLineTo = null;
@@ -271,26 +266,11 @@ public class Vehicle extends Pane{
 		});
 	}
 	
-	
-	public void continuePathTransition(){
-		
-		
-		carPathTransition.play();
-		
-	}
-	public void pausePathTransition(){
-		
-		carPathTransition.pause();
-	}/* 
-	public double getPathLength(){
-		double pathLength;
-
-	}*/
 	public void handleWin(){
 		
-		this.pausePathTransition();
+		this.carPathTransition.pause();
 		
-		//wait function here
+		
 		Vehicle v = this;
 		
 		AnimationTimer timer = new AnimationTimer() { 
@@ -317,11 +297,10 @@ public class Vehicle extends Pane{
 	}
 	public void handleDeath(){
 		
-		this.pausePathTransition();
+		this.carPathTransition.pause();
 		
 		
 		this.wrecked = true;
-		//wait function here
 		Vehicle v = this;
 		
 		AnimationTimer timer = new AnimationTimer() { 

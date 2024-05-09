@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import java.io.File;
@@ -91,6 +94,7 @@ public class LevelPane extends Pane{
 		Game game = new Game();
 		
 		accidentText = new Text("Car Accident: "+levelParser.getCarAccident()/2+"/"+levelParser.getMaxCarAccident());
+		//divide 2 because  2 cars 1 accident
 		accidentText.setLayoutX(20);
 		accidentText.setLayoutY(20);
 		this.getChildren().add(accidentText);

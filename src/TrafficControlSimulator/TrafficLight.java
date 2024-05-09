@@ -1,3 +1,6 @@
+//150123045 Buğra Kaya
+//150123055 Kerem Adalı 
+//150122029 Ali Talip Keleş
 package TrafficControlSimulator;
 
 import javafx.scene.paint.Color;
@@ -64,16 +67,12 @@ public class TrafficLight {
 	}
 
 	public void toggleLight() {
-		this.trafficLightMode = (this.getMode() == TrafficLightMode.GREEN) ? TrafficLightMode.RED
-				: TrafficLightMode.GREEN;
-		//circle.setFill(this.getColor());
+		this.trafficLightMode = (this.getMode() == TrafficLightMode.GREEN) ? TrafficLightMode.RED: TrafficLightMode.GREEN;
 	}
 
 	public void setMode(TrafficLightMode trafficLightMode) {/* 0 for red light, */
 		this.trafficLightMode = trafficLightMode;
-		//circle.setFill(this.getColor());
 	}
-
 	public Circle getCircle() {
 		Circle circle = new Circle();
 		circle.setCenterX(circlePosX);
