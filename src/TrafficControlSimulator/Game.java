@@ -167,11 +167,11 @@ public class Game {
 	public void carDetected(MoveTo moveTo) {
 		Rectangle rectangle = new Rectangle();
 		rectangle.setLayoutX(moveTo.getX()-60);
-		rectangle.setLayoutY(moveTo.getY()-30);
+		rectangle.setLayoutY(moveTo.getY()-40);
 
 		rectangle.setWidth(100);
 		rectangle.setHeight(120);
-		rectangle.setFill(Color.rgb(15, 115, 128, 0));
+		rectangle.setFill(Color.rgb(15, 115, 128,0));
 		rectangle.setViewOrder(-31);
 		carDedect.add(rectangle);
 		levelPane.getChildren().add(rectangle);
